@@ -4,7 +4,10 @@ unique_ids:
     theme.css: T56Q2K2NPHR2F4U3PYQHIFHDB5F66LSO
   forms:
     addCustomer: '1734472210661856892080088.8378'
+    addPayment: '1734472820696544995808090.0814'
+    addPayment.RowTemplate1: '1734473087491931886273436.6002'
     home: SBLKMCWEU4YJLLMDEWKMVED6LH7KITZ3
   modules: {}
   scripts: {}
-  server_modules: {}
+  server_modules:
+    customerManagement: '1734473604849596505632032.9037'
