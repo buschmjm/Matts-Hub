@@ -1,8 +1,8 @@
-from ._anvil_designer import HomeTemplate
+from ._anvil_designer import addCustomerTemplate
 from anvil import *
 
 
-class Home(HomeTemplate):
+class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
