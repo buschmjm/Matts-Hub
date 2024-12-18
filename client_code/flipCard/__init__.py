@@ -2,49 +2,47 @@ from ._anvil_designer import flipCardTemplate
 from anvil import *
 import anvil.server
 import anvil.users
-import time
 
 class flipCard(flipCardTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
     self.faces = []
     self.current_index = 0
-    self.rotation = 0
     
-    # Initialize container styles
-    self.faces_container.add_event_handler('show', self.setup_styles)
-    
-  def setup_styles(self, **event_args):
-    """Set up the 3D transformation styles"""
-    self.faces_container.style.perspective = '1000px'
-    self.faces_container.style.transform_style = 'preserve-3d'
+    # Initialize
+    self.nav_panel.visible = False
     
   def add_face(self, component):
-    """Add a new face to the cube"""
-    face = Container()
-    face.add_component(component)
-    face.style.backface_visibility = 'hidden'
-    face.style.position = 'absolute'
-    face.style.width = '100%'
-    face.style.height = '100%'
+    """Add a new face to the card"""
+    # Create a container for the component
+    container = ColumnPanel()
+    container.add_component(component)
+    container.visible = False
     
-    # Position faces in 3D space
-    angle = len(self.faces) * 90
-    face.style.transform = f'rotateY({angle}deg) translateZ(150px)'
+    # Add to our faces list and panel
+    self.faces.append(container)
+    self.face_panel.add_component(container)
     
-    self.faces.append(face)
-    self.faces_container.add_component(face)
+    # Show first face and navigation if needed
+    if len(self.faces) == 1:
+      container.visible = True
+    
+    self.nav_panel.visible = len(self.faces) > 1
     self.update_nav()
     
-  def rotate_to_face(self, index):
-    """Rotate the cube to show the specified face"""
+  def show_face(self, index):
+    """Show the specified face with a fade transition"""
     if 0 <= index < len(self.faces):
-      self.current_index = index
-      self.rotation = -index * 90
+      # Hide current face
+      if self.current_index < len(self.faces):
+        current_face = self.faces[self.current_index]
+        current_face.visible = False
       
-      # Apply rotation animation
-      self.faces_container.style.transition = 'transform 0.6s ease'
-      self.faces_container.style.transform = f'rotateY({self.rotation}deg)'
+      # Show new face
+      self.current_index = index
+      new_face = self.faces[index]
+      new_face.visible = True
+      
       self.update_nav()
       
   def update_nav(self):
@@ -56,8 +54,8 @@ class flipCard(flipCardTemplate):
     
   def prev_button_click(self, **event_args):
     if self.current_index > 0:
-      self.rotate_to_face(self.current_index - 1)
+      self.show_face(self.current_index - 1)
       
   def next_button_click(self, **event_args):
     if self.current_index < len(self.faces) - 1:
-      self.rotate_to_face(self.current_index + 1)
+      self.show_face(self.current_index + 1)
