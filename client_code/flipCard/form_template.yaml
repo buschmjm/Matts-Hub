@@ -6,30 +6,28 @@ components:
   name: linear_panel_1
   properties: {}
   type: LinearPanel
-- type: ColumnPanel
-  properties: {col_spacing: 0, row_spacing: 0}
-  name: cube_container
-  layout_properties: {expand: true}
-  components:
-  - type: FlowPanel
-    properties: {align: center, spacing: medium}
+- components:
+  - components:
+    - name: prev_button
+      properties: {icon: 'fa:chevron-left', text: ←}
+      type: Button
+    - name: page_indicator
+      properties: {text: 1/1}
+      type: Label
+    - name: next_button
+      properties: {icon: 'fa:chevron-right', text: →}
+      type: Button
     name: nav_panel
-    components:
-    - type: Button
-      name: prev_button
-      properties: {text: "←", icon: "fa:chevron-left"}
-    - type: Label
-      name: page_indicator
-      properties: {text: "1/1"}
-    - type: Button
-      name: next_button
-      properties: {text: "→", icon: "fa:chevron-right"}
-  - type: ColumnPanel
-    name: faces_container
-    properties:
-      role: card
-      spacing_above: none
-      spacing_below: none
+    properties: {align: center, spacing: medium}
+    type: FlowPanel
+  - name: faces_container
+    properties: {role: card, spacing_above: none, spacing_below: none}
+    type: ColumnPanel
+  layout_properties: {expand: true}
+  name: cube_container
+  properties: {col_spacing: 0, row_spacing: 0}
+  type: ColumnPanel
 container: {type: ColumnPanel}
+custom_component: true
 is_package: true
 custom_component: true
