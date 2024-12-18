@@ -15,13 +15,13 @@ class flipCard(flipCardTemplate):
   def add_face(self, component):
     """Add a new face to the card"""
     # Create a container for the component
-    container = ColumnPanel()
+    container = ColumnPanel(spacing_above="none", spacing_below="none")
     container.add_component(component)
     container.visible = False
     
     # Add to our faces list and panel
     self.faces.append(container)
-    self.face_panel.add_component(container)
+    self.faces_container.add_component(container)
     
     # Show first face and navigation if needed
     if len(self.faces) == 1:
@@ -31,20 +31,54 @@ class flipCard(flipCardTemplate):
     self.update_nav()
     
   def show_face(self, index):
-    """Show the specified face with a fade transition"""
+    """Show the specified face with a transition"""
     if 0 <= index < len(self.faces):
-      # Hide current face
-      if self.current_index < len(self.faces):
-        current_face = self.faces[self.current_index]
-        current_face.visible = False
-      
-      # Show new face
-      self.current_index = index
+      # Setup transition
+      old_face = self.faces[self.current_index]
       new_face = self.faces[index]
-      new_face.visible = True
       
+      # Update navigation state
+      self.current_index = index
       self.update_nav()
       
+      # Perform transition
+      old_face.visible = False
+      new_face.visible = True
+      
+      # Add transition effect
+      if index > self.current_index:
+        new_face.add_event_handler('show', self.animate_slide_left)
+      else:
+        new_face.add_event_handler('show', self.animate_slide_right)
+        
+  def animate_slide_left(self, **event_args):
+    """Animate slide from right to left"""
+    component = event_args['sender']
+    component.opacity = 0
+    component.style.transform = 'translateX(100%)'
+    
+    def animation():
+      component.opacity = 1
+      component.style.transform = 'translateX(0)'
+      component.style.transition = 'all 0.3s ease-out'
+    
+    # Schedule animation
+    anvil.js.call_js('setTimeout', animation, 50)
+    
+  def animate_slide_right(self, **event_args):
+    """Animate slide from left to right"""
+    component = event_args['sender']
+    component.opacity = 0
+    component.style.transform = 'translateX(-100%)'
+    
+    def animation():
+      component.opacity = 1
+      component.style.transform = 'translateX(0)'
+      component.style.transition = 'all 0.3s ease-out'
+    
+    # Schedule animation
+    anvil.js.call_js('setTimeout', animation, 50)
+    
   def update_nav(self):
     """Update navigation controls"""
     total = len(self.faces)
