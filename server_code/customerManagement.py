@@ -8,13 +8,26 @@ import anvil.server
 import stripe
 from stripe.error import StripeError
 
-stripe.api_key = 'your_secret_key'
+# Initialize Stripe with the API key from secrets
+stripe.api_key = anvil.secrets.get_secret('stripeKey')
 
-try:
-    customers = stripe.Customer.search(
-        query="name:'Jane Doe'"
-    )
-    for customer in customers.auto_paging_iter():
-        print(f"Customer ID: {customer.id}, Email: {customer.email}")
-except StripeError as e:
-    print(f"An error occurred: {e.user_message}")
+@anvil.server.callable
+def list_customers():
+    try:
+        customers = stripe.Customer.list()
+        return [{'id': c.id, 'name': c.name, 'email': c.email} for c in customers.auto_paging_iter()]
+    except StripeError as e:
+        raise Exception(f"Failed to fetch customers: {e.user_message}")
+
+@anvil.server.callable
+def create_customer(name, phone, email, address):
+    try:
+        customer = stripe.Customer.create(
+            name=name,
+            phone=phone,
+            email=email,
+            address=address
+        )
+        return {'id': customer.id, 'name': customer.name, 'email': customer.email}
+    except StripeError as e:
+        raise Exception(f"Failed to create customer: {e.user_message}")
