@@ -9,35 +9,36 @@ from anvil.tables import app_tables
 class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
-    # Hide panels on load
+    # Hide panels and confirm button on load
     self.new_customer_panel.visible = False
     self.confirm_selection.visible = False
     self.load_customers()
+    # Clear any initial selection
+    self.select_customer.selected_value = ''
     
   def load_customers(self):
     # Get customers from Stripe
     customers = anvil.server.call('list_customers')
-    # Add "Create New" option at the top
-    self.select_customer.items = [('Create New', None)] + [
+    # Add empty initial option and "Create New" option
+    self.select_customer.items = [('Select a customer...', '')] + [('Create New', None)] + [
         (f"{c['name']} ({c['email']})", c['id']) for c in customers
     ]
     
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
     
-    # Show/hide appropriate panels based on selection
-    if selected_value is None:
+    # Only proceed if a valid selection is made (not the empty initial option)
+    if selected_value == '':
+      self.new_customer_panel.visible = False
+      self.confirm_selection.visible = False
+    elif selected_value is None:
       # New customer selected
       self.new_customer_panel.visible = True
       self.confirm_selection.visible = True
-    elif selected_value:
+    else:
       # Existing customer selected
       self.new_customer_panel.visible = False
       self.confirm_selection.visible = True
-    else:
-      # No selection
-      self.new_customer_panel.visible = False
-      self.confirm_selection.visible = False
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
