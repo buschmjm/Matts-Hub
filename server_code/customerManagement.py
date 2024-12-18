@@ -1,3 +1,4 @@
+import anvil.stripe
 import anvil.secrets
 import anvil.users
 import anvil.tables as tables
