@@ -19,9 +19,3 @@ class home(homeTemplate):
     # Toggle visibility of the customer form
     self.add_customer_1.visible = not self.add_customer_1.visible
 
-def form_show(self, **event_args):
-  # Add some test faces to the flip card
-  self.flip_card_1.add_face(Label(text="Face 1"))
-  self.flip_card_1.add_face(TextBox(text="Face 2"))
-  self.flip_card_1.add_face(Button(text="Face 3"))
-    # Any code you write here will run before the form opens.

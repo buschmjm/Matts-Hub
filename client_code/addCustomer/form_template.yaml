@@ -11,16 +11,12 @@ components:
   name: linear_panel_2
   properties: {}
   type: LinearPanel
+- layout_properties: {grid_position: 'LPHHFH,AUMOBR'}
+  name: button_1
+  properties: {align: center, text: Confirm}
+  type: Button
 - layout_properties: {grid_position: 'XIZTBW,XRKWOB'}
   name: spacer_1
-  properties: {height: 32}
-  type: Spacer
-- layout_properties: {grid_position: 'MQANXZ,URIASF'}
-  name: label_7
-  properties: {align: center, text: OR}
-  type: Label
-- layout_properties: {grid_position: 'BGVUJJ,IEZHXF'}
-  name: spacer_2
   properties: {height: 32}
   type: Spacer
 - components:
