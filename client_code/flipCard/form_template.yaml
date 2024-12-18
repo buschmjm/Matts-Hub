@@ -1,22 +1,22 @@
-container: {type: ColumnPanel}
 components:
-- name: nav_panel
-  type: FlowPanel
-  properties: {align: center, spacing: medium}
-  components:
-  - name: prev_button
+- components:
+  - event_bindings: {click: prev_button_click}
+    name: prev_button
+    properties: {icon: 'fa:chevron-left', text: <}
     type: Button
-    properties: {icon: 'fa:chevron-left', text: '<'}
-    event_bindings: {click: prev_button_click}
   - name: page_indicator
+    properties: {text: 1/1}
     type: Label
-    properties: {text: '1/1'}
-  - name: next_button
-    type: Button
+  - event_bindings: {click: next_button_click}
+    name: next_button
     properties: {icon: 'fa:chevron-right', text: '>'}
-    event_bindings: {click: next_button_click}
+    type: Button
+  name: nav_panel
+  properties: {align: center, spacing: medium}
+  type: FlowPanel
 - name: faces_container
-  type: ColumnPanel
   properties: {role: card, spacing_above: none, spacing_below: none}
+  type: ColumnPanel
+container: {type: ColumnPanel}
 custom_component: true
 is_package: true
