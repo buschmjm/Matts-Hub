@@ -8,83 +8,50 @@ class flipCard(flipCardTemplate):
     self.init_components(**properties)
     self.faces = []
     self.current_index = 0
+    self.action_map = {}  # Maps components to next face index
     
-    # Initialize
-    self.nav_panel.visible = False
+    # Initialize navigation
+    self.nav_panel.visible = True
+    self.setup_faces()
     
-  def add_face(self, component):
-    """Add a new face to the card"""
-    # Create a container for the component
-    container = ColumnPanel(spacing_above="none", spacing_below="none")
-    container.add_component(component)
-    container.visible = False
+  def setup_faces(self):
+    """Get all immediate children of content_panel as faces"""
+    self.faces = [c for c in self.content_panel.get_components()]
     
-    # Add to our faces list and panel
-    self.faces.append(container)
-    self.faces_container.add_component(container)
+    # Hide all faces except first
+    for i, face in enumerate(self.faces):
+      face.visible = (i == 0)
     
-    # Show first face and navigation if needed
-    if len(self.faces) == 1:
-      container.visible = True
-    
-    self.nav_panel.visible = len(self.faces) > 1
     self.update_nav()
     
+  def link_action(self, component, next_face_index):
+    """Link a component's click event to show a specific face"""
+    self.action_map[component] = next_face_index
+    component.set_event_handler('click', self._handle_action_click)
+    
+  def _handle_action_click(self, sender, **event_args):
+    """Handle clicks on linked components"""
+    if sender in self.action_map:
+      next_index = self.action_map[sender]
+      self.show_face(next_index)
+      
   def show_face(self, index):
     """Show the specified face with a transition"""
     if 0 <= index < len(self.faces):
-      # Setup transition
-      old_face = self.faces[self.current_index]
-      new_face = self.faces[index]
+      # Hide current face
+      self.faces[self.current_index].visible = False
       
-      # Update navigation state
+      # Show new face
+      self.faces[index].visible = True
       self.current_index = index
+      
+      # Update navigation
       self.update_nav()
       
-      # Perform transition
-      old_face.visible = False
-      new_face.visible = True
-      
-      # Add transition effect
-      if index > self.current_index:
-        new_face.add_event_handler('show', self.animate_slide_left)
-      else:
-        new_face.add_event_handler('show', self.animate_slide_right)
-        
-  def animate_slide_left(self, **event_args):
-    """Animate slide from right to left"""
-    component = event_args['sender']
-    component.opacity = 0
-    component.style.transform = 'translateX(100%)'
-    
-    def animation():
-      component.opacity = 1
-      component.style.transform = 'translateX(0)'
-      component.style.transition = 'all 0.3s ease-out'
-    
-    # Schedule animation
-    anvil.js.call_js('setTimeout', animation, 50)
-    
-  def animate_slide_right(self, **event_args):
-    """Animate slide from left to right"""
-    component = event_args['sender']
-    component.opacity = 0
-    component.style.transform = 'translateX(-100%)'
-    
-    def animation():
-      component.opacity = 1
-      component.style.transform = 'translateX(0)'
-      component.style.transition = 'all 0.3s ease-out'
-    
-    # Schedule animation
-    anvil.js.call_js('setTimeout', animation, 50)
-    
   def update_nav(self):
-    """Update navigation controls"""
-    total = len(self.faces)
-    self.page_indicator.text = f"{self.current_index + 1}/{total}" if total > 0 else "0/0"
-    self.prev_button.enabled = total > 1 and self.current_index > 0
-    self.next_button.enabled = total > 1 and self.current_index < total - 1
+    """Update navigation buttons"""
+    self.prev_button.enabled = self.current_index > 0
+    self.next_button.enabled = self.current_index < len(self.faces) - 1
     
   def prev_button_click(self, **event_args):
     if self.current_index > 0:
