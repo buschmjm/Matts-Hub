@@ -1,6 +1,5 @@
 from ._anvil_designer import homeTemplate
 from anvil import *
-import stripe.checkout
 import anvil.server
 import anvil.users
 import anvil.tables as tables
@@ -12,12 +11,13 @@ class home(homeTemplate):
   def __init__(self, **properties):
     # Set Form properties and Data Bindings.
     self.init_components(**properties)
-    # Example usage in your form
+    # Initialize with the customer form hidden
+    self.add_customer_1.visible = False
 
   def collect_payment_button_click(self, **event_args):
     """This method is called when the button is clicked"""
-    # When collect payment is clicked, show the add customer form
-    self.flip_card_1.show_face(1)  # Assuming addCustomer is the second component (index 1)
+    # Toggle visibility of the customer form
+    self.add_customer_1.visible = not self.add_customer_1.visible
 
 def form_show(self, **event_args):
   # Add some test faces to the flip card
