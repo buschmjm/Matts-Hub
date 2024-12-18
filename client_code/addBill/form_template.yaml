@@ -3,7 +3,8 @@ components:
   name: label_1
   properties: {text: Select Billing Items}
   type: Label
-- layout_properties: {grid_position: 'QVFZOZ,FADNUU'}
+- event_bindings: {change: product_picker_change}
+  layout_properties: {grid_position: 'QVFZOZ,FADNUU'}
   name: product_picker
   properties: {}
   type: DropDown

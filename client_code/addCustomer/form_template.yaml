@@ -3,7 +3,8 @@ components:
   - name: label_6
     properties: {align: center, text: Select Customer}
     type: Label
-  - name: select_customer
+  - event_bindings: {change: select_customer_change}
+    name: select_customer
     properties: {}
     type: DropDown
   layout_properties: {grid_position: 'GVHOHC,NJEOZK'}
