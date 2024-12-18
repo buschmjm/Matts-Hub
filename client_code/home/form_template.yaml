@@ -2,8 +2,8 @@ components:
 - components:
   - components:
     - layout_properties: {grid_position: 'VQJMBB,RFITZV'}
-      name: button_4
-      properties: {text: button_4}
+      name: collect_payment_button
+      properties: {text: Collect Payment}
       type: Button
     - layout_properties: {grid_position: 'YFVKAZ,HJVBSI'}
       name: add_customer_1
