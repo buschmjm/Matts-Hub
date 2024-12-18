@@ -75,4 +75,5 @@ components:
   properties: {}
   type: GridPanel
 container: {type: ColumnPanel}
+custom_component: true
 is_package: true
