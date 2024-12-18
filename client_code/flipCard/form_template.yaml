@@ -3,5 +3,29 @@ components:
   name: linear_panel_1
   properties: {}
   type: LinearPanel
+- type: ColumnPanel
+  properties: {col_spacing: 0, row_spacing: 0}
+  name: cube_container
+  layout_properties: {expand: true}
+  components:
+  - type: FlowPanel
+    properties: {align: center, spacing: medium}
+    name: nav_panel
+    components:
+    - type: Button
+      name: prev_button
+      properties: {text: "←", icon: "fa:chevron-left"}
+    - type: Label
+      name: page_indicator
+      properties: {text: "1/1"}
+    - type: Button
+      name: next_button
+      properties: {text: "→", icon: "fa:chevron-right"}
+  - type: ColumnPanel
+    name: faces_container
+    properties:
+      role: card
+      spacing_above: none
+      spacing_below: none
 container: {type: ColumnPanel}
 is_package: true
