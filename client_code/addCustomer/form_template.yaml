@@ -4,7 +4,7 @@ components:
     name: label_6
     properties: {align: center, text: Existing Customer}
     type: Label
-  - name: drop_down_1
+  - name: select_customer
     properties: {}
     type: DropDown
   layout_properties: {grid_position: 'MTKYRM,RWUTWW'}
@@ -31,29 +31,29 @@ components:
   - name: label_2
     properties: {text: Name}
     type: Label
-  - name: text_box_1
+  - name: name_input
     properties: {}
     type: TextBox
   - name: label_4
     properties: {text: Phone Number}
     type: Label
-  - name: text_box_2
+  - name: phone_input
     properties: {}
     type: TextBox
   - name: label_1
     properties: {text: Email Address}
     type: Label
-  - name: text_box_3
+  - name: email_input
     properties: {}
     type: TextBox
   - name: label_3
     properties: {text: Address}
     type: Label
-  - name: text_box_4
+  - name: address_input
     properties: {}
     type: TextBox
   layout_properties: {grid_position: 'RYZYFC,KJAQFU'}
-  name: linear_panel_1
+  name: new_customer_form
   properties: {}
   type: LinearPanel
 container: {type: ColumnPanel}
