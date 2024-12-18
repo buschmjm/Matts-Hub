@@ -9,7 +9,9 @@ from anvil.tables import app_tables
 class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
-    self.new_customer_form.visible = False
+    # Hide panels on load
+    self.new_customer_panel.visible = False
+    self.confirm_selection.visible = False
     self.load_customers()
     
   def load_customers(self):
@@ -21,10 +23,32 @@ class addCustomer(addCustomerTemplate):
     ]
     
   def select_customer_change(self, **event_args):
-    # Show/hide the new customer form based on selection
     selected_value = self.select_customer.selected_value
-    self.new_customer_form.visible = (selected_value is None)
     
+    # Show/hide appropriate panels based on selection
+    if selected_value is None:
+      # New customer selected
+      self.new_customer_panel.visible = True
+      self.confirm_selection.visible = True
+    elif selected_value:
+      # Existing customer selected
+      self.new_customer_panel.visible = False
+      self.confirm_selection.visible = True
+    else:
+      # No selection
+      self.new_customer_panel.visible = False
+      self.confirm_selection.visible = False
+
+  def confirm_selection_click(self, **event_args):
+    selected_value = self.select_customer.selected_value
+    if selected_value:
+      # Existing customer selected - navigate to addBill
+      get_open_form().add_bill_1.visible = True
+      self.visible = False
+    else:
+      # New customer - proceed with creation
+      self.create_customer_click()
+      
   def create_customer_click(self, **event_args):
     # Validate inputs
     if not all([self.name_input.text, self.email_input.text]):
@@ -42,6 +66,10 @@ class addCustomer(addCustomerTemplate):
       alert("Customer created successfully!")
       self.load_customers()  # Reload the dropdown
       self.clear_inputs()
+      # After successful customer creation, navigate to addBill
+      if customer:
+        get_open_form().add_bill_1.visible = True
+        self.visible = False
     except Exception as e:
       alert(f"Error creating customer: {str(e)}")
       
