@@ -16,7 +16,8 @@ class home(homeTemplate):
 
   def collect_payment_button_click(self, **event_args):
     """This method is called when the button is clicked"""
-    pass
+    # When collect payment is clicked, show the add customer form
+    self.flip_card_1.show_face(1)  # Assuming addCustomer is the second component (index 1)
 
 def form_show(self, **event_args):
   # Add some test faces to the flip card
