@@ -1,29 +1,24 @@
-container: {type: ColumnPanel}
 components:
-- type: ColumnPanel
-  name: content_panel
-  properties: 
-    role: card
-    spacing_above: none
-    spacing_below: none
-  components:
-  - type: ColumnPanel
+- components:
+  - layout_properties: {expand: true}
     name: card_content
-    properties:
-      spacing_above: none
-      spacing_below: none
-    layout_properties: {expand: true}
-- type: FlowPanel
-  name: nav_panel
-  properties: {align: center, spacing: medium, visible: true}
-  components:
-  - type: Button
+    properties: {spacing_above: none, spacing_below: none}
+    type: ColumnPanel
+  name: content_panel
+  properties: {role: card, spacing_above: none, spacing_below: none}
+  type: ColumnPanel
+- components:
+  - event_bindings: {click: prev_button_click}
     name: prev_button
-    properties: {icon: 'fa:chevron-left', text: '<'}
-    event_bindings: {click: prev_button_click}
-  - type: Button
+    properties: {icon: 'fa:chevron-left', text: <}
+    type: Button
+  - event_bindings: {click: next_button_click}
     name: next_button
     properties: {icon: 'fa:chevron-right', text: '>'}
-    event_bindings: {click: next_button_click}
+    type: Button
+  name: nav_panel
+  properties: {align: center, spacing: medium, visible: true}
+  type: FlowPanel
+container: {type: ColumnPanel}
 custom_component: true
 is_package: true

@@ -5,15 +5,15 @@ components:
       name: add_customer_1
       properties: {}
       type: form:addCustomer
+    - event_bindings: {click: collect_payment_button_click}
+      layout_properties: {grid_position: 'ZJGYUV,HKKMXC'}
+      name: collect_payment_button
+      properties: {text: Collect Payment}
+      type: Button
     - layout_properties: {grid_position: 'YVLPPH,BFEOTO'}
       name: flip_card_1
       properties: {}
       type: form:flipCard
-    - event_bindings: {click: collect_payment_button_click}
-      layout_properties: {grid_position: 'MIIXWM,VKQISL'}
-      name: collect_payment_button
-      properties: {text: Collect Payment}
-      type: Button
     - layout_properties: {grid_position: 'ITNKLB,GQRHOA'}
       name: spacer_3
       properties: {height: 32}
