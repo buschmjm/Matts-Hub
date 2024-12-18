@@ -2,6 +2,7 @@ container:
   type: ColumnPanel
   properties: {col_spacing: medium, row_spacing: medium}
 components:
+<<<<<<< HEAD
 - name: nav_panel
   type: FlowPanel
   properties: {align: center, spacing: medium, visible: true}
@@ -25,5 +26,34 @@ components:
   - name: face_panel
     type: ColumnPanel
     properties: {role: tonal-card}
+=======
+- layout_properties: {grid_position: 'ZHLBGL,EOXUAO'}
+  name: linear_panel_1
+  properties: {}
+  type: LinearPanel
+- components:
+  - components:
+    - name: prev_button
+      properties: {icon: 'fa:chevron-left', text: ←}
+      type: Button
+    - name: page_indicator
+      properties: {text: 1/1}
+      type: Label
+    - name: next_button
+      properties: {icon: 'fa:chevron-right', text: →}
+      type: Button
+    name: nav_panel
+    properties: {align: center, spacing: medium}
+    type: FlowPanel
+  - name: faces_container
+    properties: {role: card, spacing_above: none, spacing_below: none}
+    type: ColumnPanel
+  layout_properties: {expand: true}
+  name: cube_container
+  properties: {col_spacing: 0, row_spacing: 0}
+  type: ColumnPanel
+container: {type: ColumnPanel}
+custom_component: true
+>>>>>>> ee16bbc5819e0f1008624c47bb96d581b90206a7
 is_package: true
 custom_component: true
