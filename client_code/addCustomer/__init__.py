@@ -55,14 +55,12 @@ class addCustomer(addCustomerTemplate):
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
-    parent = get_open_form()
     
     if selected_value and selected_value != '':
-      # Existing customer selected - switch to bill form
-      self.visible = False
-      parent.add_bill_1.visible = True
+      # Existing customer selected - raise event
+      self.raise_event('x-customer-selected', customer_id=selected_value)
     else:
-      # New customer - create then switch to bill form
+      # New customer - proceed with creation
       self.create_customer_click()
       
   def create_customer_click(self, **event_args):
@@ -79,13 +77,9 @@ class addCustomer(addCustomerTemplate):
         email=self.email_input.text.strip(),
         address=self.address_input.text.strip()
       )
-      alert("Customer created successfully!")
-      self.load_customers()  # Reload the dropdown
-      self.clear_inputs()
-      # After successful customer creation, navigate to addBill
       if customer:
-        get_open_form().add_bill_1.visible = True
-        self.visible = False
+        # Raise event with new customer info
+        self.raise_event('x-customer-selected', customer_id=customer['id'])
     except Exception as e:
       alert(f"Error creating customer: {str(e)}")
       
