@@ -1,6 +1,14 @@
 components:
 - components:
   - components:
+    - layout_properties: {grid_position: 'VQJMBB,RFITZV'}
+      name: collect_payment_button
+      properties: {text: Collect Payment}
+      type: Button
+    - layout_properties: {grid_position: 'YFVKAZ,HJVBSI'}
+      name: add_customer_1
+      properties: {}
+      type: form:addCustomer
     - layout_properties: {grid_position: 'MALXZR,ZFLNRP'}
       name: flip_card_1
       properties: {}
