@@ -12,9 +12,15 @@ class addCustomer(addCustomerTemplate):
     # Hide panels and confirm button on load
     self.new_customer_panel.visible = False
     self.confirm_selection.visible = False
-    self.load_customers()
-    # Clear any initial selection
     self.select_customer.selected_value = ''
+    # Don't load customers until needed
+    self._customers_loaded = False
+    
+  def form_show(self, **event_args):
+    """Load customers only when form becomes visible"""
+    if not self._customers_loaded:
+      self.load_customers()
+      self._customers_loaded = True
     
   def check_new_customer_fields(self):
     """Validate all required fields are filled"""

@@ -10,15 +10,22 @@ from anvil.tables import app_tables
 class home(homeTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
+    # Hide forms initially
     self.add_customer_1.visible = False
     self.add_bill_1.visible = False
     
-    # Add event handler for customer selection
-    self.add_customer_1.add_event_handler('x-customer-selected', self.customer_selected)
+    # Delay adding event handler until needed
+    self._setup_complete = False
+    
+  def setup_handlers(self):
+    """Lazy initialization of event handlers"""
+    if not self._setup_complete:
+      self.add_customer_1.add_event_handler('x-customer-selected', self.customer_selected)
+      self._setup_complete = True
 
   def collect_payment_button_click(self, **event_args):
     """This method is called when the button is clicked"""
-    # Show customer form, hide bill form
+    self.setup_handlers()  # Ensure handlers are set up
     self.add_customer_1.visible = True
     self.add_bill_1.visible = False
     
