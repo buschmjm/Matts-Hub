@@ -25,6 +25,14 @@ class addCustomer(addCustomerTemplate):
       'phone': '',
       'address': ''
     }
+    self._setup_validation_triggers()
+    
+  def _setup_validation_triggers(self):
+    """Set up lost focus event handlers for all input fields"""
+    self.name_input.set_event_handler('lost_focus', self.name_input_lost_focus)
+    self.email_input.set_event_handler('lost_focus', self.email_input_lost_focus)
+    self.phone_input.set_event_handler('lost_focus', self.phone_input_lost_focus)
+    self.address_input.set_event_handler('lost_focus', self.address_input_lost_focus)
     
   def form_show(self, **event_args):
     """Load customers when form becomes visible"""
@@ -92,23 +100,47 @@ class addCustomer(addCustomerTemplate):
     if selected_value is None:
       # Initial "Select a customer..." option
       self.new_customer_panel.visible = False
-      self.confirm_selection.enabled = False
     elif selected_value == 'new':
       # "Create New" option
       self.new_customer_panel.visible = True
-      self.confirm_selection.enabled = self.check_new_customer_fields()
+      # Clear any previous validation errors
+      self.validation_errors = {k: '' for k in self.validation_errors}
+      # Reset backgrounds
+      for input_field in [self.name_input, self.email_input, self.phone_input, self.address_input]:
+        input_field.background = 'white'
     else:
       # Existing customer selected
       self.new_customer_panel.visible = False
-      self.confirm_selection.enabled = True
+    
+    self.update_confirm_button()
 
   def input_changed(self, **event_args):
-    """Update confirm button state"""
+    """Update confirm button state whenever any input changes"""
+    self.update_confirm_button()
+
+  def update_confirm_button(self):
+    """Update confirm button state and appearance"""
+    has_errors = any(self.validation_errors.values())
     if self.select_customer.selected_value == 'new':
-      # Update button state based on validation
-      has_errors = any(self.validation_errors.values())
-      self.confirm_selection.enabled = not has_errors
-      self.confirm_selection.background = '#f8f8f8' if has_errors else None
+      fields_empty = not all([
+        self.name_input.text,
+        self.email_input.text,
+        self.phone_input.text,
+        self.address_input.text
+      ])
+      self.confirm_selection.enabled = not (has_errors or fields_empty)
+      self.confirm_selection.background = '#f8f8f8' if (has_errors or fields_empty) else None
+      if fields_empty:
+        self.confirm_selection.tooltip = "Please fill in all required fields"
+      elif has_errors:
+        self.confirm_selection.tooltip = "Please fix validation errors"
+      else:
+        self.confirm_selection.tooltip = ""
+    else:
+      # For existing customer selection
+      self.confirm_selection.enabled = bool(self.select_customer.selected_value)
+      self.confirm_selection.background = None
+      self.confirm_selection.tooltip = ""
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
@@ -166,10 +198,9 @@ class addCustomer(addCustomerTemplate):
     pass
 
   def show_validation_message(self, field_name):
-    """Display validation message if there's an error and hasn't been shown"""
-    if self.validation_errors[field_name] and not getattr(self, f'_{field_name}_error_shown', False):
+    """Display validation message immediately"""
+    if self.validation_errors[field_name]:
       Notification(self.validation_errors[field_name], timeout=3).show()
-      setattr(self, f'_{field_name}_error_shown', True)
 
   def name_input_lost_focus(self, **event_args):
     """Validate name field when user leaves it"""
@@ -180,8 +211,7 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['name'] = ''
       self.name_input.background = 'white'
-      self._name_error_shown = False
-    self.input_changed()
+    self.update_confirm_button()
 
   def email_input_lost_focus(self, **event_args):
     """Validate email field when user leaves it"""
@@ -192,8 +222,7 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['email'] = ''
       self.email_input.background = 'white'
-      self._email_error_shown = False
-    self.input_changed()
+    self.update_confirm_button()
 
   def phone_input_lost_focus(self, **event_args):
     """Validate phone field when user leaves it"""
@@ -204,8 +233,7 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['phone'] = ''
       self.phone_input.background = 'white'
-      self._phone_error_shown = False
-    self.input_changed()
+    self.update_confirm_button()
 
   def address_input_lost_focus(self, **event_args):
     """Validate address field when user leaves it"""
@@ -216,8 +244,7 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['address'] = ''
       self.address_input.background = 'white'
-      self._address_error_shown = False
-    self.input_changed()
+    self.update_confirm_button()
 
   def phone_input_pressed_enter(self, **event_args):
     """This method is called when the user presses Enter in this text box"""
