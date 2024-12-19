@@ -9,10 +9,8 @@ from anvil.tables import app_tables
 class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
-    # Hide panels and confirm button on load
     self.new_customer_panel.visible = False
     self.confirm_selection.visible = False
-    self.select_customer.selected_value = ''
     # Don't load customers until needed
     self._customers_loaded = False
     
@@ -33,19 +31,23 @@ class addCustomer(addCustomerTemplate):
     # Get customers from Stripe
     customers = anvil.server.call('list_customers')
     # Add empty initial option and "Create New" option
-    self.select_customer.items = [('Select a customer...', '')] + [('Create New', None)] + [
+    self.select_customer.items = [
+        ('Select a customer...', None),  # Changed '' to None for initial option
+        ('Create New', 'new')            # Changed None to 'new' for create new option
+    ] + [
         (f"{c['name']} ({c['email']})", c['id']) for c in customers
     ]
     
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
     
-    # Only proceed if a valid selection is made (not the empty initial option)
-    if selected_value == '':
+    # Updated logic for new values
+    if selected_value is None:
+      # Initial "Select a customer..." option
       self.new_customer_panel.visible = False
       self.confirm_selection.visible = False
-    elif selected_value is None:
-      # New customer selected
+    elif selected_value == 'new':
+      # "Create New" option
       self.new_customer_panel.visible = True
       self.confirm_selection.visible = False  # Hide until fields are valid
     else:
@@ -55,14 +57,14 @@ class addCustomer(addCustomerTemplate):
 
   def input_changed(self, **event_args):
     """Called when any input field changes"""
-    if self.select_customer.selected_value is None:
+    if self.select_customer.selected_value == 'new':
       # Show confirm button only if all required fields are filled
       self.confirm_selection.visible = self.check_new_customer_fields()
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
     
-    if selected_value and selected_value != '':
+    if selected_value and selected_value != 'new':
       # Existing customer selected - raise event
       self.raise_event('x-customer-selected', customer_id=selected_value)
     else:
