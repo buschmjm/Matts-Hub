@@ -11,7 +11,8 @@ class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
     self.new_customer_panel.visible = False
-    self.confirm_selection.visible = False
+    self.confirm_selection.visible = True  # Always show the confirm button
+    self.confirm_selection.enabled = False  # But start it disabled
     self._customers_loaded = False
     # Initialize with loading state
     self.select_customer.items = [('Loading...', None)]
@@ -88,27 +89,25 @@ class addCustomer(addCustomerTemplate):
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
     
-    # Updated logic for new values
     if selected_value is None:
       # Initial "Select a customer..." option
       self.new_customer_panel.visible = False
-      self.confirm_selection.visible = False
+      self.confirm_selection.enabled = False
     elif selected_value == 'new':
       # "Create New" option
       self.new_customer_panel.visible = True
-      self.confirm_selection.visible = False  # Hide until fields are valid
+      self.confirm_selection.enabled = self.check_new_customer_fields()
     else:
       # Existing customer selected
       self.new_customer_panel.visible = False
-      self.confirm_selection.visible = True
+      self.confirm_selection.enabled = True
 
   def input_changed(self, **event_args):
     """Update confirm button state"""
     if self.select_customer.selected_value == 'new':
-      # Always show the button, validation happens on click
-      self.confirm_selection.visible = True
-      # Visual feedback if there are any errors
+      # Update button state based on validation
       has_errors = any(self.validation_errors.values())
+      self.confirm_selection.enabled = not has_errors
       self.confirm_selection.background = '#f8f8f8' if has_errors else None
 
   def confirm_selection_click(self, **event_args):
