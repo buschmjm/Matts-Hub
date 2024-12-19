@@ -28,6 +28,8 @@ class home(homeTemplate):
     self.setup_handlers()  # Ensure handlers are set up
     self.add_customer_1.visible = True
     self.add_bill_1.visible = False
+    # Trigger customer list reload when showing the form
+    self.add_customer_1.reload_customers()
     
   def customer_selected(self, customer_id, **event_args):
     """Handle customer selection"""

@@ -11,14 +11,46 @@ class addCustomer(addCustomerTemplate):
     self.init_components(**properties)
     self.new_customer_panel.visible = False
     self.confirm_selection.visible = False
-    # Don't load customers until needed
     self._customers_loaded = False
+    # Initialize with loading state
+    self.select_customer.items = [('Loading...', None)]
+    self.select_customer.enabled = False
     
   def form_show(self, **event_args):
-    """Load customers only when form becomes visible"""
+    """Load customers when form becomes visible"""
     if not self._customers_loaded:
-      self.load_customers()
+      self.load_customers_async()
+    
+  def load_customers_async(self):
+    """Asynchronously load customers with loading state"""
+    # Show loading state
+    self.select_customer.items = [('Loading...', None)]
+    self.select_customer.enabled = False
+    
+    # Use background task to load customers
+    anvil.server.call_s('list_customers',
+                       callback=self.on_customers_loaded)
+      
+  def on_customers_loaded(self, customers):
+    """Callback when customers are loaded"""
+    try:
+      self.select_customer.items = [
+          ('Select a customer...', None),
+          ('Create New', 'new')
+      ] + [
+          (f"{c['name']} ({c['email']})", c['id']) for c in customers
+      ]
+      self.select_customer.enabled = True
       self._customers_loaded = True
+    except Exception as e:
+      alert(f"Error loading customers: {str(e)}")
+      # Reset to empty state on error
+      self.select_customer.items = [('Error loading customers', None)]
+    
+  def reload_customers(self):
+    """Public method to trigger customer list reload"""
+    self._customers_loaded = False
+    self.load_customers_async()
     
   def check_new_customer_fields(self):
     """Validate all required fields are filled"""
@@ -26,17 +58,6 @@ class addCustomer(addCustomerTemplate):
       self.name_input.text and self.name_input.text.strip(),
       self.email_input.text and self.email_input.text.strip()
     ])
-    
-  def load_customers(self):
-    # Get customers from Stripe
-    customers = anvil.server.call('list_customers')
-    # Add empty initial option and "Create New" option
-    self.select_customer.items = [
-        ('Select a customer...', None),  # Changed '' to None for initial option
-        ('Create New', 'new')            # Changed None to 'new' for create new option
-    ] + [
-        (f"{c['name']} ({c['email']})", c['id']) for c in customers
-    ]
     
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
