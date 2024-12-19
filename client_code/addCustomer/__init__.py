@@ -116,7 +116,7 @@ class addCustomer(addCustomerTemplate):
     
     if selected_value and selected_value != 'new':
       # Existing customer selected - store ID and raise event
-      anvil.local_storage.set('temp_customer_id', selected_value)
+      anvil.local_storage.local_storage['temp_customer_id'] = selected_value
       self.raise_event('x-customer-selected', customer_id=selected_value)
     else:
       # New customer - proceed with creation
@@ -143,7 +143,7 @@ class addCustomer(addCustomerTemplate):
       )
       if customer:
         # Store customer ID in local storage
-        anvil.local_storage.set('temp_customer_id', customer['id'])
+        anvil.local_storage.local_storage['temp_customer_id'] = customer['id']
         # Raise event with new customer info
         self.raise_event('x-customer-selected', customer_id=customer['id'])
         # Clear form
@@ -209,5 +209,10 @@ class addCustomer(addCustomerTemplate):
       self.validation_errors['address'] = ''
       self.address_input.background = 'white'
     self.input_changed()
+
+  def phone_input_pressed_enter(self, **event_args):
+    """This method is called when the user presses Enter in this text box"""
+    if not any(self.validation_errors.values()):
+      self.create_customer_click()
 
 
