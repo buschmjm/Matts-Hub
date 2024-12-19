@@ -82,36 +82,46 @@ components:
   type: DataGrid
 container:
   type: ColumnPanel
-  properties: {col_spacing: medium}
+  properties: {spacing_above: none}
   components:
   - type: DropDown
     name: product_picker
-    properties: {placeholder: Select a product}
-    event_bindings: {change: product_picker_change}
+    properties: {align: left, placeholder: Select a product, enabled: true}
     
-  - type: TextBox
-    name: quantity_box
-    properties: {placeholder: Quantity, type: number, enabled: false}
-    
-  - type: Button
-    name: add_button
-    properties: {text: Add to Bill, enabled: false}
-    event_bindings: {click: add_button_click}
-    
+  - type: FlowPanel
+    name: controls_panel
+    properties: {align: left, spacing: medium}
+    components:
+    - type: TextBox
+      name: quantity_box
+      properties: {align: left, type: number, placeholder: Quantity, enabled: false}
+      
+    - type: Button
+      name: add_button
+      properties: {text: Add Item, enabled: false}
+      event_bindings: {click: add_button_click}
+      
   - type: RepeatingPanel
     name: bill_items_panel
-    properties: {}
+    properties: {item_template: DataRowPanel}
     
-  - type: Label
-    name: subtotal_label
-    properties: {text: Subtotal: $0.00}
-    
-  - type: Label
-    name: tax_label
-    properties: {text: Tax: $0.00}
-    
-  - type: Label
-    name: total_label
-    properties: {text: Total: $0.00}
+  - type: GridPanel
+    name: totals_panel
+    properties: {spacing_above: large}
+    components:
+    - type: Label
+      name: subtotal_label
+      properties: {bold: true, text: 'Subtotal: $0.00'}
+      layout_properties: {row: 0, col: 0}
+      
+    - type: Label
+      name: tax_label
+      properties: {bold: true, text: 'Tax: $0.00'}
+      layout_properties: {row: 1, col: 0}
+      
+    - type: Label
+      name: total_label
+      properties: {bold: true, text: 'Total: $0.00'}
+      layout_properties: {row: 2, col: 0}
 
 is_package: true

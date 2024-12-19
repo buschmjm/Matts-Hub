@@ -1,26 +1,37 @@
 container:
-  type: FlowPanel
-  properties: {spacing: medium}
+  type: GridPanel
+  properties: {spacing: medium, col_spacing: medium}
   components:
   - type: Label
     name: name_label
-    properties: {text: item.name}
+    properties: {text: ''}
+    data_bindings: [{property: text, code: self.item['name']}]
+    layout_properties: {col: 0}
     
-  - type: Label
-    name: quantity_label
-    properties: {text: item.quantity}
+  - type: TextBox
+    name: quantity_box
+    properties: {type: number, align: center}
+    data_bindings: [{property: text, code: str(self.item['quantity'])}]
+    layout_properties: {col: 1}
+    event_bindings: {change: quantity_changed}
     
   - type: Label
     name: price_label
-    properties: {text: item.price}
+    properties: {align: right}
+    data_bindings: [{property: text, code: f"${self.item['price']:.2f}"}]
+    layout_properties: {col: 2}
     
   - type: Label
     name: total_label
-    properties: {text: item.total}
+    properties: {align: right}
+    data_bindings: [{property: text, code: f"${self.item['total']:.2f}"}]
+    layout_properties: {col: 3}
     
   - type: CheckBox
-    name: taxable_checkbox
-    properties: {checked: item.taxable}
+    name: taxable_box
+    properties: {}
+    data_bindings: [{property: checked, code: self.item['taxable']}]
+    layout_properties: {col: 4}
     event_bindings: {change: taxable_changed}
 
 is_package: true
