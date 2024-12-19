@@ -82,33 +82,28 @@ components:
   type: DataGrid
 container:
   type: ColumnPanel
-  properties: {col_spacing: medium, spacing_above: none, spacing_below: none}
-  name: column_panel_1
-  layout_properties: {grid_position: 'XJFYXX,ZLQZFG'}
+  properties: {col_spacing: medium}
   components:
   - type: Label
-    properties: {text: Loading products..., visible: true}
     name: loading_label
-    layout_properties: {grid_position: 'PNAWVN,NUFXMC'}
+    properties: {text: Loading products..., visible: true}
   - type: DropDown
-    properties: {visible: false, enabled: false}
     name: product_picker
-    layout_properties: {grid_position: 'QULSHJ,YOWEED'}
+    properties: {visible: false, placeholder: Select a product}
     event_bindings: {change: product_picker_change}
   - type: Label
-    properties: {text: '', role: input-prompt}
-    name: price_label
-    layout_properties: {grid_position: 'AEMSTY,LPNHUD'}
-  - type: Label
-    properties: {text: '', role: body}
     name: description_label
-    layout_properties: {grid_position: 'BNXKPO,WQQZIG'}
+    properties: {text: '', role: body}
+  - type: Label
+    name: price_label
+    properties: {text: '', role: title}
   - type: TextBox
-    properties: {type: number, enabled: false}
     name: quantity_box
-    layout_properties: {grid_position: 'CDHTHY,MNBVCX'}
+    properties: {type: number, placeholder: Quantity, enabled: false}
   - type: Button
-    properties: {text: Add to Bill, enabled: false}
     name: add_item_button
-    layout_properties: {grid_position: 'DEFGHI,QWERTY'}
+    properties: {text: Add to Bill, enabled: false}
+  - type: DataGrid
+    name: bill_items
+    properties: {visible: true}
 is_package: true
