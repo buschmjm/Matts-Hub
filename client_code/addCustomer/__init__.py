@@ -112,3 +112,7 @@ class addCustomer(addCustomerTemplate):
     self.phone_input.text = ""
     self.email_input.text = ""
     self.address_input.text = ""
+
+  def address_input_pressed_enter(self, **event_args):
+    """This method is called when the user presses Enter in this text box"""
+    pass

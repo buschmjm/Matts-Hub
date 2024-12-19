@@ -40,7 +40,8 @@ components:
   - name: label_3
     properties: {text: Address}
     type: Label
-  - name: address_input
+  - event_bindings: {pressed_enter: address_input_pressed_enter}
+    name: address_input
     properties: {}
     type: TextBox
   layout_properties: {grid_position: 'LRKNBC,HHOFPA'}
