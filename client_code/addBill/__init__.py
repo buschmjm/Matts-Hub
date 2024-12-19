@@ -4,14 +4,29 @@ import anvil.server
 
 class addBill(addBillTemplate):
   def __init__(self, **properties):
-    # Initialize the form
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
     self.bill_items = []
     
-    # Ensure the grid is empty initially
-    self.bill_items_panel.rows = []
+    # Initialize component states
+    self.product_picker.items = []
+    self.quantity_box.enabled = False
+    self.add_button.enabled = False
+    
+    # Initialize labels
+    self.subtotal_label.text = "Subtotal: $0.00"
+    self.tax_label.text = "Tax: $0.00"
+    self.total_label.text = "Total: $0.00"
+    
+    # Set up grid columns
+    self.bill_items_panel.columns = [
+      {'id': 'name', 'title': 'Item', 'data_key': 'name'},
+      {'id': 'quantity', 'title': 'Quantity', 'data_key': 'quantity'},
+      {'id': 'price', 'title': 'Price', 'data_key': 'price'},
+      {'id': 'total', 'title': 'Total', 'data_key': 'total'},
+      {'id': 'taxable', 'title': 'Taxable', 'data_key': 'taxable'}
+    ]
 
   def set_customer(self, customer_id):
     """Set customer and load billing data"""
