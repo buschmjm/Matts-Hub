@@ -153,3 +153,21 @@ class addCustomer(addCustomerTemplate):
   def address_input_pressed_enter(self, **event_args):
     """This method is called when the user presses Enter in this text box"""
     pass
+
+  def name_input_change(self, **event_args):
+    """This method is called when the text in this text box is edited"""
+    pass
+
+  def email_input_change(self, **event_args):
+    """This method is called when the text in this text box is edited"""
+    pass
+
+  def phone_input_change(self, **event_args):
+    """This method is called when the text in this text box is edited"""
+    pass
+
+  def address_input_change(self, **event_args):
+    """This method is called when the text in this text box is edited"""
+    pass
+
+

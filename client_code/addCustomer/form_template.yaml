@@ -22,25 +22,28 @@ components:
   - name: label_2
     properties: {text: Name}
     type: Label
-  - name: name_input
+  - event_bindings: {change: name_input_change}
+    name: name_input
     properties: {}
     type: TextBox
   - name: label_1
     properties: {text: Email Address}
     type: Label
-  - name: email_input
+  - event_bindings: {change: email_input_change}
+    name: email_input
     properties: {}
     type: TextBox
   - name: label_4
     properties: {text: Phone Number}
     type: Label
-  - name: phone_input
+  - event_bindings: {change: phone_input_change, pressed_enter: phone_input_pressed_enter}
+    name: phone_input
     properties: {}
     type: TextBox
   - name: label_3
     properties: {text: Address}
     type: Label
-  - event_bindings: {pressed_enter: address_input_pressed_enter}
+  - event_bindings: {change: address_input_change}
     name: address_input
     properties: {}
     type: TextBox
