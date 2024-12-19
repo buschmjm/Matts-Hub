@@ -74,15 +74,13 @@ components:
   name: bill_preview
   properties:
     columns:
-    - {data_key: column_1, expand: false, id: JKSDUP, title: Item Name, width: 309.74261474609375}
+    - {data_key: column_1, expand: false, id: JKSDUP, title: Item Name, width: 191.01983642578125}
     - {data_key: column_2, expand: false, id: VJQQOR, title: Item Quantity, width: 107.08917236328125}
     - {data_key: column_3, expand: false, id: OJLQEN, title: Price Each, width: 98.4356689453125}
     - {data_key: column_1, expand: false, id: YQDGLG, title: Item Total, width: 94.45550537109375}
     - {data_key: column_1, expand: false, id: PWLFGU, title: 'Taxable?', width: 77.31689453125}
   type: DataGrid
 container:
-  type: ColumnPanel
-  properties: {col_spacing: medium}
   components:
     - type: Label
       name: loading_label
