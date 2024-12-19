@@ -11,10 +11,9 @@ class addBill(addBillTemplate):
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
-    # Initially hide the product picker and show loading
+    # Initially hide and disable the product picker
     self.product_picker.visible = False
-    self.loading_label.text = "Loading products..."
-    self.loading_label.visible = True
+    self.product_picker.enabled = False
 
   def set_customer(self, customer_id):
     """Set customer and load billing data"""
@@ -25,16 +24,18 @@ class addBill(addBillTemplate):
   def load_billing_data(self):
     """Load all necessary billing data from server"""
     try:
-      self.loading_label.visible = True
-      self.product_picker.visible = False
+      # Show loading state in picker
+      self.product_picker.items = [('Loading products...', None)]
+      self.product_picker.enabled = False
       
+      # Get billing data
       self.billing_data = anvil.server.call('get_billing_data', self.customer_id)
       self.populate_products()
       
     except Exception as e:
       alert(f"Error loading billing data: {str(e)}")
+      self.product_picker.items = [('Error loading products', None)]
     finally:
-      self.loading_label.visible = False
       self.product_picker.visible = True
 
   def populate_products(self):
@@ -44,26 +45,22 @@ class addBill(addBillTemplate):
       
     # Format products for dropdown
     self.product_picker.items = [
+      ('Select a product...', None)
+    ] + [
       (f"{p['name']} - ${p['prices'][0]['unit_amount']/100:.2f}", p) 
       for p in self.billing_data['products'] 
       if p['prices']
     ]
+    self.product_picker.enabled = True
 
   def product_picker_change(self, **event_args):
     """Handle product selection"""
     selected = self.product_picker.selected_value
     if selected:
-      # Update price display
-      price = selected['prices'][0]['unit_amount']/100
-      self.price_label.text = f"${price:.2f}"
-      # Show any additional product details
-      self.description_label.text = selected['description'] or "No description available"
-      # Enable quantity input and add button if needed
+      # Enable relevant input fields for quantity/etc
       self.quantity_box.enabled = True
       self.add_item_button.enabled = True
     else:
-      # Reset UI elements
-      self.price_label.text = ""
-      self.description_label.text = ""
+      # Disable input fields if no product selected
       self.quantity_box.enabled = False
       self.add_item_button.enabled = False
