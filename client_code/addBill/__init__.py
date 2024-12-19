@@ -7,7 +7,6 @@ class addBill(addBillTemplate):
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
-    self.bill_items = []
 
   def set_customer(self, customer_id):
     self.customer_id = customer_id
