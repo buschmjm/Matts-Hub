@@ -19,21 +19,17 @@ class addCustomer(addCustomerTemplate):
   def form_show(self, **event_args):
     """Load customers when form becomes visible"""
     if not self._customers_loaded:
-      self.load_customers_async()
+      self.reload_customers()
     
+  @anvil.server.background_task
   def load_customers_async(self):
-    """Asynchronously load customers with loading state"""
-    # Show loading state
+    """Asynchronously load customers"""
     self.select_customer.items = [('Loading...', None)]
     self.select_customer.enabled = False
     
-    # Use background task to load customers
-    anvil.server.call_s('list_customers',
-                       callback=self.on_customers_loaded)
-      
-  def on_customers_loaded(self, customers):
-    """Callback when customers are loaded"""
     try:
+      # Direct server call without callback
+      customers = anvil.server.call('list_customers')
       self.select_customer.items = [
           ('Select a customer...', None),
           ('Create New', 'new')
@@ -44,8 +40,8 @@ class addCustomer(addCustomerTemplate):
       self._customers_loaded = True
     except Exception as e:
       alert(f"Error loading customers: {str(e)}")
-      # Reset to empty state on error
       self.select_customer.items = [('Error loading customers', None)]
+      self.select_customer.enabled = True
     
   def reload_customers(self):
     """Public method to trigger customer list reload"""
