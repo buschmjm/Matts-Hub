@@ -9,8 +9,7 @@ class addBill(addBillTemplate):
     self.billing_data = None
     self.bill_items = []
     
-    # Set up repeating panel columns
-    self.bill_items_panel.item_template = DataRowPanel
+    # Initialize the grid
     self.refresh_bill_items()
 
   def set_customer(self, customer_id):
@@ -73,7 +72,7 @@ class addBill(addBillTemplate):
 
   def refresh_bill_items(self):
     """Update the bill items display"""
-    self.bill_items_panel.items = self.bill_items
+    self.bill_items_panel.rows = self.bill_items
     self.calculate_totals()
 
   def calculate_totals(self):
