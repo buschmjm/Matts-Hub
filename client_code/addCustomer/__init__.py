@@ -21,14 +21,13 @@ class addCustomer(addCustomerTemplate):
     if not self._customers_loaded:
       self.reload_customers()
     
-  @anvil.server.background_task
   def load_customers_async(self):
-    """Asynchronously load customers"""
+    """Load customers asynchronously"""
     self.select_customer.items = [('Loading...', None)]
     self.select_customer.enabled = False
     
     try:
-      # Direct server call without callback
+      # Use anvil.server.call directly - it's already asynchronous
       customers = anvil.server.call('list_customers')
       self.select_customer.items = [
           ('Select a customer...', None),
