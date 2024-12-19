@@ -5,6 +5,7 @@ import anvil.users
 import anvil.tables as tables
 import anvil.tables.query as q
 from anvil.tables import app_tables
+import re
 
 class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
@@ -15,6 +16,8 @@ class addCustomer(addCustomerTemplate):
     # Initialize with loading state
     self.select_customer.items = [('Loading...', None)]
     self.select_customer.enabled = False
+    self.email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    self.phone_regex = r'^\+?1?\d{9,15}$'
     
   def form_show(self, **event_args):
     """Load customers when form becomes visible"""
@@ -47,12 +50,34 @@ class addCustomer(addCustomerTemplate):
     self._customers_loaded = False
     self.load_customers_async()
     
+  def validate_email(self, email):
+    """Validate email format"""
+    if not email or not email.strip():
+      return False
+    return bool(re.match(self.email_regex, email.strip()))
+    
+  def validate_phone(self, phone):
+    """Validate phone number format"""
+    if not phone or not phone.strip():
+      return False
+    # Remove any spaces, dashes, or parentheses
+    phone_cleaned = re.sub(r'[\s\-\(\)]', '', phone.strip())
+    return bool(re.match(self.phone_regex, phone_cleaned))
+    
   def check_new_customer_fields(self):
-    """Validate all required fields are filled"""
-    return all([
-      self.name_input.text and self.name_input.text.strip(),
-      self.email_input.text and self.email_input.text.strip()
-    ])
+    """Validate all required fields are filled and valid"""
+    name_valid = bool(self.name_input.text and self.name_input.text.strip())
+    email_valid = self.validate_email(self.email_input.text)
+    phone_valid = self.validate_phone(self.phone_input.text)
+    address_valid = bool(self.address_input.text and self.address_input.text.strip())
+    
+    # Update visual feedback
+    self.name_input.background = 'white' if name_valid else '#f8f8f8'
+    self.email_input.background = 'white' if email_valid else '#f8f8f8'
+    self.phone_input.background = 'white' if phone_valid else '#f8f8f8'
+    self.address_input.background = 'white' if address_valid else '#f8f8f8'
+    
+    return all([name_valid, email_valid, phone_valid, address_valid])
     
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
@@ -74,8 +99,9 @@ class addCustomer(addCustomerTemplate):
   def input_changed(self, **event_args):
     """Called when any input field changes"""
     if self.select_customer.selected_value == 'new':
-      # Show confirm button only if all required fields are filled
-      self.confirm_selection.visible = self.check_new_customer_fields()
+      is_valid = self.check_new_customer_fields()
+      self.confirm_selection.visible = is_valid
+      self.confirm_selection.enabled = is_valid
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
@@ -90,14 +116,25 @@ class addCustomer(addCustomerTemplate):
   def create_customer_click(self, **event_args):
     # Validate inputs
     if not self.check_new_customer_fields():
-      alert("Name and email are required!")
+      # Show specific validation messages
+      if not self.name_input.text.strip():
+        alert("Name is required!")
+      elif not self.validate_email(self.email_input.text):
+        alert("Please enter a valid email address!")
+      elif not self.validate_phone(self.phone_input.text):
+        alert("Please enter a valid phone number!")
+      elif not self.address_input.text.strip():
+        alert("Address is required!")
       return
+      
+    # Clean the phone number before sending
+    phone_cleaned = re.sub(r'[\s\-\(\)]', '', self.phone_input.text.strip())
       
     # Create new customer
     try:
       customer = anvil.server.call('create_customer',
         name=self.name_input.text.strip(),
-        phone=self.phone_input.text.strip(),
+        phone=phone_cleaned,
         email=self.email_input.text.strip(),
         address=self.address_input.text.strip()
       )
