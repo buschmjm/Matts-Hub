@@ -58,3 +58,7 @@ class addBill(addBillTemplate):
       }
       for p in self.billing_data['products']
     ]
+
+  def product_picker_change(self, **event_args):
+    """This method is called when an item is selected"""
+    pass
