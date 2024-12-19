@@ -13,9 +13,9 @@ class addBill(addBillTemplate):
     self.billing_data = None
     # Initialize empty list for selected items
     self.bill_items = []
-    # Initially hide and disable the product picker
-    self.product_picker.visible = False
-    self.product_picker.enabled = False
+    # Show and enable the product picker by default
+    self.product_picker.visible = True
+    self.product_picker.enabled = True
     # Initialize the repeating panel with empty list
     self.repeating_panel_1.items = self.bill_items  # Changed from selected_items_panel to repeating_panel_1
 
@@ -31,6 +31,16 @@ class addBill(addBillTemplate):
         self.label_2.text = f"Items for {self.billing_data['customer']['name']}"
         self.bill_total.text = "Total: $0.00"
         self.taxes_total.text = "Tax: $0.00"
+        
+        # Populate product picker
+        self.product_picker.items = [
+          ('Select a product...', None)
+        ] + [
+          (f"{p['name']} - ${p['prices'][0]['unit_amount']/100:.2f}", p) 
+          for p in self.billing_data['products'] 
+          if p['prices']
+        ]
+        
     except Exception as e:
       alert(f"Error loading billing data: {str(e)}")
 
