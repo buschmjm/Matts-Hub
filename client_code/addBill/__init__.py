@@ -11,9 +11,11 @@ class addBill(addBillTemplate):
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
-    # Initially hide the product grid/panel
-    self.product_grid.visible = False
-    
+    # Initially hide the product picker and show loading
+    self.product_picker.visible = False
+    self.loading_label.text = "Loading products..."
+    self.loading_label.visible = True
+
   def set_customer(self, customer_id):
     """Set customer and load billing data"""
     self.customer_id = customer_id
@@ -23,42 +25,45 @@ class addBill(addBillTemplate):
   def load_billing_data(self):
     """Load all necessary billing data from server"""
     try:
-      # Show loading indicator (assuming you have one in your template)
       self.loading_label.visible = True
-      self.product_grid.visible = False
+      self.product_picker.visible = False
       
-      # Get all billing data in one call
       self.billing_data = anvil.server.call('get_billing_data', self.customer_id)
-      
-      # Populate the UI with the received data
       self.populate_products()
       
     except Exception as e:
       alert(f"Error loading billing data: {str(e)}")
     finally:
-      # Hide loading indicator
       self.loading_label.visible = False
-      self.product_grid.visible = True
+      self.product_picker.visible = True
 
   def populate_products(self):
-    """Populate the product grid with loaded products"""
+    """Populate the product picker with loaded products"""
     if not self.billing_data:
       return
       
-    # Clear existing items
-    self.product_grid.items = []
-    
-    # Add products to the grid
-    self.product_grid.items = [
-      {
-        'name': p['name'],
-        'description': p['description'],
-        'price': f"${p['prices'][0]['unit_amount']/100:.2f}" if p['prices'] else 'N/A',
-        'product': p  # Store full product data for later use
-      }
-      for p in self.billing_data['products']
+    # Format products for dropdown
+    self.product_picker.items = [
+      (f"{p['name']} - ${p['prices'][0]['unit_amount']/100:.2f}", p) 
+      for p in self.billing_data['products'] 
+      if p['prices']
     ]
 
   def product_picker_change(self, **event_args):
-    """This method is called when an item is selected"""
-    pass
+    """Handle product selection"""
+    selected = self.product_picker.selected_value
+    if selected:
+      # Update price display
+      price = selected['prices'][0]['unit_amount']/100
+      self.price_label.text = f"${price:.2f}"
+      # Show any additional product details
+      self.description_label.text = selected['description'] or "No description available"
+      # Enable quantity input and add button if needed
+      self.quantity_box.enabled = True
+      self.add_item_button.enabled = True
+    else:
+      # Reset UI elements
+      self.price_label.text = ""
+      self.description_label.text = ""
+      self.quantity_box.enabled = False
+      self.add_item_button.enabled = False
