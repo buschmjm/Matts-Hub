@@ -48,22 +48,23 @@ components:
           padding: [null, null, '0', null]
         text: How would you like to process this bill?
       type: Label
-    - name: radio_button_1
-      properties:
-        font: ''
-        font_size: 12
-        spacing:
-          margin: ['0', null, '0', null]
-          padding: ['0', null, '0', null]
-        text: Collect Payment Now
-      type: RadioButton
     - name: radio_button_1_copy
       properties:
-        font_size: 12
+        font_size: 10
         spacing:
           margin: ['0', null, '0', null]
           padding: ['0', null, '0', null]
         text: Send Invoice
+      type: RadioButton
+    - layout_properties: {}
+      name: radio_button_1
+      properties:
+        font: ''
+        font_size: 10
+        spacing:
+          margin: ['0', null, '0', null]
+          padding: ['0', null, '0', null]
+        text: Collect Payment Now
       type: RadioButton
     layout_properties: {slot: footer}
     name: payment_method_selector
