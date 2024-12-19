@@ -74,56 +74,41 @@ components:
   name: bill_preview
   properties:
     columns:
-    - {data_key: column_1, expand: false, id: JKSDUP, title: Item Name, width: 309.74261474609375}
+    - {data_key: column_1, expand: false, id: JKSDUP, title: Item Name, width: 191.01983642578125}
     - {data_key: column_2, expand: false, id: VJQQOR, title: Item Quantity, width: 107.08917236328125}
     - {data_key: column_3, expand: false, id: OJLQEN, title: Price Each, width: 98.4356689453125}
     - {data_key: column_1, expand: false, id: YQDGLG, title: Item Total, width: 94.45550537109375}
     - {data_key: column_1, expand: false, id: PWLFGU, title: 'Taxable?', width: 77.31689453125}
   type: DataGrid
 container:
-  type: ColumnPanel
-  properties: {col_spacing: medium}
   components:
-    - type: Label
-      name: loading_label
-      properties: {text: Loading products..., font_size: 16}
-    
-    - type: DropDown
-      name: product_picker
-      properties: {placeholder: Select a product, visible: false}
-      event_bindings: {change: product_picker_change}
-      
-    - type: Label
-      name: price_label
-      properties: {font_size: 18, bold: true}
-      
-    - type: Label
-      name: description_label
-      properties: {font_size: 14}
-      
-    - type: TextBox
-      name: quantity_box
-      properties: {placeholder: Enter quantity, type: number, enabled: false}
-      
-    - type: Button
-      name: add_item_button
-      properties: {text: Add to Bill, enabled: false}
-
-    - type: DataGrid
-      name: bill_items_grid
-      properties: {visible: true}
-      columns:
-        - name: product_name
-          title: Product
-          data_key: name
-        - name: quantity
-          title: Quantity
-          data_key: quantity
-        - name: price
-          title: Price
-          data_key: price
-        - name: total
-          title: Total
-          data_key: total
-
+  - name: loading_label
+    properties: {font_size: 16, text: Loading products...}
+    type: Label
+  - event_bindings: {change: product_picker_change}
+    name: product_picker
+    properties: {placeholder: Select a product, visible: false}
+    type: DropDown
+  - name: price_label
+    properties: {bold: true, font_size: 18}
+    type: Label
+  - name: description_label
+    properties: {font_size: 14}
+    type: Label
+  - name: quantity_box
+    properties: {enabled: false, placeholder: Enter quantity, type: number}
+    type: TextBox
+  - name: add_item_button
+    properties: {enabled: false, text: Add to Bill}
+    type: Button
+  - columns:
+    - {data_key: name, name: product_name, title: Product}
+    - {data_key: quantity, name: quantity, title: Quantity}
+    - {data_key: price, name: price, title: Price}
+    - {data_key: total, name: total, title: Total}
+    name: bill_items_grid
+    properties: {visible: true}
+    type: DataGrid
+  properties: {col_spacing: medium}
+  type: ColumnPanel
 is_package: true
