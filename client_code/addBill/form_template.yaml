@@ -84,26 +84,46 @@ container:
   type: ColumnPanel
   properties: {col_spacing: medium}
   components:
-  - type: Label
-    name: loading_label
-    properties: {text: Loading products..., visible: true}
-  - type: DropDown
-    name: product_picker
-    properties: {visible: false, placeholder: Select a product}
-    event_bindings: {change: product_picker_change}
-  - type: Label
-    name: description_label
-    properties: {text: '', role: body}
-  - type: Label
-    name: price_label
-    properties: {text: '', role: title}
-  - type: TextBox
-    name: quantity_box
-    properties: {type: number, placeholder: Quantity, enabled: false}
-  - type: Button
-    name: add_item_button
-    properties: {text: Add to Bill, enabled: false}
-  - type: DataGrid
-    name: bill_items
-    properties: {visible: true}
+    - type: Label
+      name: loading_label
+      properties: {text: Loading products..., font_size: 16}
+    
+    - type: DropDown
+      name: product_picker
+      properties: {placeholder: Select a product, visible: false}
+      event_bindings: {change: product_picker_change}
+      
+    - type: Label
+      name: price_label
+      properties: {font_size: 18, bold: true}
+      
+    - type: Label
+      name: description_label
+      properties: {font_size: 14}
+      
+    - type: TextBox
+      name: quantity_box
+      properties: {placeholder: Enter quantity, type: number, enabled: false}
+      
+    - type: Button
+      name: add_item_button
+      properties: {text: Add to Bill, enabled: false}
+
+    - type: DataGrid
+      name: bill_items_grid
+      properties: {visible: true}
+      columns:
+        - name: product_name
+          title: Product
+          data_key: name
+        - name: quantity
+          title: Quantity
+          data_key: quantity
+        - name: price
+          title: Price
+          data_key: price
+        - name: total
+          title: Total
+          data_key: total
+
 is_package: true
