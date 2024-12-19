@@ -17,7 +17,7 @@ class addBill(addBillTemplate):
     self.product_picker.visible = False
     self.product_picker.enabled = False
     # Initialize the repeating panel with empty list
-    self.items_panel.items = self.bill_items
+    self.repeating_panel_1.items = self.bill_items  # Changed from selected_items_panel to repeating_panel_1
 
   def set_customer(self, customer_id):
     self.customer_id = customer_id
@@ -71,7 +71,7 @@ class addBill(addBillTemplate):
     # Add to bill items list
     self.bill_items.append(new_item)
     # Update repeating panel
-    self.items_panel.items = self.bill_items
+    self.repeating_panel_1.items = self.bill_items  # Changed from items_panel
     
     # Reset product picker
     self.product_picker.selected_value = None
@@ -85,7 +85,7 @@ class addBill(addBillTemplate):
         qty = int(new_quantity)
         if qty > 0:
           self.bill_items[item_index]['item_quantity'] = qty
-          self.items_panel.items = self.bill_items
+          self.repeating_panel_1.items = self.bill_items  # Changed from items_panel
       except ValueError:
         pass
 
@@ -93,10 +93,10 @@ class addBill(addBillTemplate):
     """Update taxable status for an item"""
     if 0 <= item_index < len(self.bill_items):
       self.bill_items[item_index]['taxable'] = taxable
-      self.items_panel.items = self.bill_items
+      self.repeating_panel_1.items = self.bill_items  # Changed from items_panel
 
   def remove_item(self, item_index):
     """Remove an item from the selected items"""
     if 0 <= item_index < len(self.bill_items):
       self.bill_items.pop(item_index)
-      self.items_panel.items = self.bill_items
+      self.repeating_panel_1.items = self.bill_items  # Changed from items_panel
