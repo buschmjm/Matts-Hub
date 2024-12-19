@@ -80,6 +80,35 @@ components:
     - {data_key: column_1, expand: false, id: YQDGLG, title: Item Total, width: 94.45550537109375}
     - {data_key: column_1, expand: false, id: PWLFGU, title: 'Taxable?', width: 77.31689453125}
   type: DataGrid
-container: {type: ColumnPanel}
-custom_component: true
+container:
+  type: ColumnPanel
+  properties: {col_spacing: medium, spacing_above: none, spacing_below: none}
+  name: column_panel_1
+  layout_properties: {grid_position: 'XJFYXX,ZLQZFG'}
+  components:
+  - type: Label
+    properties: {text: Loading products..., visible: true}
+    name: loading_label
+    layout_properties: {grid_position: 'PNAWVN,NUFXMC'}
+  - type: DropDown
+    properties: {visible: false, enabled: false}
+    name: product_picker
+    layout_properties: {grid_position: 'QULSHJ,YOWEED'}
+    event_bindings: {change: product_picker_change}
+  - type: Label
+    properties: {text: '', role: input-prompt}
+    name: price_label
+    layout_properties: {grid_position: 'AEMSTY,LPNHUD'}
+  - type: Label
+    properties: {text: '', role: body}
+    name: description_label
+    layout_properties: {grid_position: 'BNXKPO,WQQZIG'}
+  - type: TextBox
+    properties: {type: number, enabled: false}
+    name: quantity_box
+    layout_properties: {grid_position: 'CDHTHY,MNBVCX'}
+  - type: Button
+    properties: {text: Add to Bill, enabled: false}
+    name: add_item_button
+    layout_properties: {grid_position: 'DEFGHI,QWERTY'}
 is_package: true
