@@ -1,0 +1,26 @@
+container:
+  type: FlowPanel
+  properties: {spacing: medium}
+  components:
+  - type: Label
+    name: name_label
+    properties: {text: item.name}
+    
+  - type: Label
+    name: quantity_label
+    properties: {text: item.quantity}
+    
+  - type: Label
+    name: price_label
+    properties: {text: item.price}
+    
+  - type: Label
+    name: total_label
+    properties: {text: item.total}
+    
+  - type: CheckBox
+    name: taxable_checkbox
+    properties: {checked: item.taxable}
+    event_bindings: {change: taxable_changed}
+
+is_package: true

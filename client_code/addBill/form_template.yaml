@@ -84,52 +84,34 @@ container:
   type: ColumnPanel
   properties: {col_spacing: medium}
   components:
-  - type: Label
-    name: customer_name
-    properties: {text: Customer: }
-    
   - type: DropDown
     name: product_picker
     properties: {placeholder: Select a product}
     event_bindings: {change: product_picker_change}
     
-  - type: FlowPanel
-    name: input_panel
-    properties: {spacing: medium}
-    components:
-    - type: TextBox
-      name: quantity_box
-      properties: {type: number, placeholder: Quantity}
-      
-    - type: Button
-      name: add_item_button
-      properties: {text: Add Item}
-      event_bindings: {click: add_item_button_click}
-      
-  - type: DataGrid
-    name: bill_preview
-    properties: {visible: true}
-    event_bindings: {change: bill_preview_change}
+  - type: TextBox
+    name: quantity_box
+    properties: {placeholder: Quantity, type: number, enabled: false}
     
-  - type: FlowPanel
-    name: totals_panel
-    properties: {spacing: medium}
-    components:
-    - type: Label
-      name: subtotal_label
-      properties: {text: "Subtotal: $0.00"}
-      
-    - type: Label
-      name: tax_label
-      properties: {text: "Tax: $0.00"}
-      
-    - type: Label
-      name: total_label
-      properties: {text: "Total: $0.00"}
-      
   - type: Button
-    name: submit_bill_button
-    properties: {text: Submit Bill}
-    event_bindings: {click: submit_bill_click}
+    name: add_button
+    properties: {text: Add to Bill, enabled: false}
+    event_bindings: {click: add_button_click}
+    
+  - type: RepeatingPanel
+    name: bill_items_panel
+    properties: {}
+    
+  - type: Label
+    name: subtotal_label
+    properties: {text: Subtotal: $0.00}
+    
+  - type: Label
+    name: tax_label
+    properties: {text: Tax: $0.00}
+    
+  - type: Label
+    name: total_label
+    properties: {text: Total: $0.00}
 
 is_package: true
