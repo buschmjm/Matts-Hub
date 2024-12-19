@@ -39,6 +39,15 @@ class addBill(addBillTemplate):
     try:
       self.product_picker.items = [('Loading...', None)]
       self.billing_data = anvil.server.call('get_billing_data', self.customer_id)
+      self.update_display()
+    except Exception as e:
+      alert(f"Error loading billing data: {str(e)}")
+
+  def update_display(self):
+    """Update the display with current billing data"""
+    if self.billing_data:
+      # Update labels with customer info
+      self.label_2.text = f"Items for {self.billing_data['customer']['name']}"
       
       # Populate product dropdown
       if self.billing_data and 'products' in self.billing_data:
@@ -49,8 +58,6 @@ class addBill(addBillTemplate):
           for p in self.billing_data['products'] 
           if p.get('prices')
         ]
-    except Exception as e:
-      alert(f"Error loading billing data: {str(e)}")
 
   def product_picker_change(self, **event_args):
     """Handle product selection"""
@@ -100,3 +107,11 @@ class addBill(addBillTemplate):
     self.subtotal_label.text = f"Subtotal: ${subtotal:.2f}"
     self.tax_label.text = f"Tax: ${tax:.2f}"
     self.total_label.text = f"Total: ${(subtotal + tax):.2f}"
+
+  def radio_button_1_copy_clicked(self, **event_args):
+    """Credit Card selected"""
+    pass
+
+  def radio_button_1_clicked(self, **event_args):
+    """Cash selected"""
+    pass
