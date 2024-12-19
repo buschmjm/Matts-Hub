@@ -2,53 +2,49 @@ container:
   type: ColumnPanel
   properties: {col_spacing: medium}
   components:
-  - type: Label
-    name: customer_title
-    properties: {text: Create Bill}
-    
-  - type: DropDown
-    name: product_picker
-    properties: {placeholder: Select Product}
-    event_bindings: {change: product_picker_change}
-    
-  - type: TextBox
-    name: quantity_box
-    properties: {placeholder: Quantity, type: number, enabled: false}
-    
-  - type: Button
-    name: add_button
-    properties: {text: Add Item, enabled: false}
-    event_bindings: {click: add_button_click}
-    
-  - type: DataGrid
-    name: bill_items_panel
+  - type: ColumnPanel
+    name: main_panel
     properties: {}
-    columns:
-    - title: Item
-      name: name
-    - title: Quantity
-      name: quantity
-    - title: Price
-      name: price
-    - title: Total 
-      name: total
-    - title: Taxable
-      name: taxable
-      
-  - type: FlowPanel
-    name: totals_panel
-    properties: {spacing: medium}
     components:
+    - type: DropDown
+      name: product_picker
+      properties: {align: left, placeholder: Select Product}
+      event_bindings: {change: product_picker_change}
+      
+    - type: TextBox
+      name: quantity_box
+      properties: {type: number, placeholder: Quantity, enabled: false}
+      
+    - type: Button
+      name: add_button
+      properties: {text: Add Item, enabled: false}
+      event_bindings: {click: add_button_click}
+      
+    - type: DataGrid
+      name: bill_items_panel
+      properties: {}
+      columns:
+      - title: Product
+        name: name
+      - title: Quantity
+        name: quantity
+      - title: Price
+        name: price
+      - title: Total
+        name: total
+      - title: Taxable
+        name: taxable
+        
     - type: Label
       name: subtotal_label
-      properties: {text: "Subtotal: $0.00"}
+      properties: {text: "Subtotal: $0.00", align: right}
       
     - type: Label
       name: tax_label
-      properties: {text: "Tax: $0.00"}
+      properties: {text: "Tax: $0.00", align: right}
       
     - type: Label
       name: total_label
-      properties: {text: "Total: $0.00"}
+      properties: {text: "Total: $0.00", align: right, bold: true}
 
 is_package: true

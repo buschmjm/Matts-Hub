@@ -4,13 +4,14 @@ import anvil.server
 
 class addBill(addBillTemplate):
   def __init__(self, **properties):
+    # Initialize the form
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
     self.bill_items = []
     
-    # Initialize the grid
-    self.refresh_bill_items()
+    # Ensure the grid is empty initially
+    self.bill_items_panel.rows = []
 
   def set_customer(self, customer_id):
     """Set customer and load billing data"""
