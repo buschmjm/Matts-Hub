@@ -126,4 +126,34 @@ container:
           title: Total
           data_key: total
 
+    - type: FlowPanel
+      properties: {spacing: medium}
+      components:
+        - type: TextBox
+          name: quantity_box
+          properties: {placeholder: Quantity, type: number}
+          
+        - type: Button
+          name: add_item_button
+          properties: {text: Add to Bill}
+          event_bindings: {click: add_item_button_click}
+          
+    - type: DataGrid
+      name: bill_preview
+      properties: {visible: true}
+      event_bindings: {change: bill_preview_change}
+      
+    - type: FlowPanel
+      properties: {spacing: medium}
+      components:
+        - type: Label
+          name: subtotal_label
+          properties: {text: "Subtotal: $0.00"}
+        - type: Label
+          name: tax_label
+          properties: {text: "Tax: $0.00"}
+        - type: Label
+          name: total_label
+          properties: {text: "Total: $0.00"}
+
 is_package: true
