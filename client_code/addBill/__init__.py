@@ -1,9 +1,8 @@
-from ._anvil_designer import addBillTemplate
 from anvil import *
-import anvil.server
 
-class addBill(addBillTemplate):
+class addBill(Form):
   def __init__(self, **properties):
+    # Initialize the form
     self.init_components(**properties)
     self.customer_id = None
     self.billing_data = None
