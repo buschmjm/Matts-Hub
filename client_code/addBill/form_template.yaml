@@ -3,22 +3,76 @@ container:
   type: ColumnPanel
   properties: {spacing_above: none}
   components:
-  - type: GridPanel
-    name: grid_panel_1
-    properties: {spacing_above: none}
-    layout_properties: {grid_position: 'TOP,0'}
+    - type: Label
+      name: loading_label
+      properties: {text: Loading products..., font_size: 16}
+    
+    - type: DropDown
+      name: product_picker
+      properties: {placeholder: Select a product, visible: false}
+      event_bindings: {change: product_picker_change}
+      
+    - type: Label
+      name: price_label
+      properties: {font_size: 18, bold: true}
+      
+    - type: Label
+      name: description_label
+      properties: {font_size: 14}
+      
+    - type: TextBox
+      name: quantity_box
+      properties: {placeholder: Enter quantity, type: number, enabled: false}
+      
+    - type: Button
+      name: add_item_button
+      properties: {text: Add to Bill, enabled: false}
 
-  - type: Label
-    name: label_2
-    properties: {text: Selected Customer}
-    layout_properties: {grid_position: 'CUSTOMER,0'}
+    - type: DataGrid
+      name: bill_items_grid
+      properties: {visible: true}
+      columns:
+        - name: product_name
+          title: Product
+          data_key: name
+        - name: quantity
+          title: Quantity
+          data_key: quantity
+        - name: price
+          title: Price
+          data_key: price
+        - name: total
+          title: Total
+          data_key: total
 
-  - type: Label
-    name: bill_total
-    properties: {text: "Total: $0.00"}
-    layout_properties: {grid_position: 'TOTAL,0'}
+    - type: FlowPanel
+      properties: {spacing: medium}
+      components:
+        - type: TextBox
+          name: quantity_box
+          properties: {placeholder: Quantity, type: number}
+          
+        - type: Button
+          name: add_item_button
+          properties: {text: Add to Bill}
+          event_bindings: {click: add_item_button_click}
+          
+    - type: DataGrid
+      name: bill_preview
+      properties: {visible: true}
+      event_bindings: {change: bill_preview_change}
+      
+    - type: FlowPanel
+      properties: {spacing: medium}
+      components:
+        - type: Label
+          name: subtotal_label
+          properties: {text: "Subtotal: $0.00"}
+        - type: Label
+          name: tax_label
+          properties: {text: "Tax: $0.00"}
+        - type: Label
+          name: total_label
+          properties: {text: "Total: $0.00"}
 
-  - type: Label
-    name: taxes_total
-    properties: {text: "Tax: $0.00"}
-    layout_properties: {grid_position: 'TAX,0'}
+is_package: true
