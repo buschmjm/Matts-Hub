@@ -33,6 +33,9 @@ class home(homeTemplate):
     """Handle customer selection"""
     # Hide customer form and show bill form
     self.add_customer_1.visible = False
-    self.add_bill_1.visible = True
-    self.add_bill_1.set_customer(customer_id)
+    try:
+      self.add_bill_1.visible = True
+      self.add_bill_1.set_customer(customer_id)
+    except Exception as e:
+      alert(f"Error showing bill form: {str(e)}")
 
