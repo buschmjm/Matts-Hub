@@ -14,6 +14,10 @@ class addBill(addBillTemplate):
     # Initially hide and disable the product picker
     self.product_picker.visible = False
     self.product_picker.enabled = False
+    # Initialize empty list for selected items
+    self.selected_items = []
+    # Set up the repeating panel
+    self.selected_items_panel.items = self.selected_items
 
   def set_customer(self, customer_id):
     """Set customer and load billing data"""
@@ -64,3 +68,51 @@ class addBill(addBillTemplate):
       # Disable input fields if no product selected
       self.quantity_box.enabled = False
       self.add_item_button.enabled = False
+
+  def add_item_button_click(self, **event_args):
+    """Add selected product to the items panel"""
+    selected_product = self.product_picker.selected_value
+    if not selected_product:
+      return
+      
+    # Create new item dictionary
+    new_item = {
+      'item_name': selected_product['name'],
+      'item_quantity': 1,  # Default quantity
+      'item_price': selected_product['prices'][0]['unit_amount'] / 100,  # Convert cents to dollars
+      'taxable': True,  # Default to taxable
+      'product_id': selected_product['id']  # Store for reference
+    }
+    
+    # Add to selected items list
+    self.selected_items.append(new_item)
+    # Update repeating panel
+    self.selected_items_panel.items = self.selected_items
+    
+    # Reset product picker
+    self.product_picker.selected_value = None
+    self.quantity_box.enabled = False
+    self.add_item_button.enabled = False
+
+  def update_item_quantity(self, item_index, new_quantity):
+    """Update quantity for an item"""
+    if 0 <= item_index < len(self.selected_items):
+      try:
+        qty = int(new_quantity)
+        if qty > 0:
+          self.selected_items[item_index]['item_quantity'] = qty
+          self.selected_items_panel.items = self.selected_items
+      except ValueError:
+        pass  # Invalid number entered
+
+  def update_item_taxable(self, item_index, taxable):
+    """Update taxable status for an item"""
+    if 0 <= item_index < len(self.selected_items):
+      self.selected_items[item_index]['taxable'] = taxable
+      self.selected_items_panel.items = self.selected_items
+
+  def remove_item(self, item_index):
+    """Remove an item from the selected items"""
+    if 0 <= item_index < len(self.selected_items):
+      self.selected_items.pop(item_index)
+      self.selected_items_panel.items = self.selected_items
