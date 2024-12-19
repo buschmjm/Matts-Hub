@@ -11,12 +11,24 @@ class addBill(addBillTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
     self.customer_id = None
+    self.products = None
+    self.loading_panel.visible = True
+    self.product_panel.visible = False
 
-  def set_customer(self, customer_id):
-    """Set the customer ID and initialize the form"""
+  def set_customer(self, customer_id, products=None):
+    """Set customer and initialize products"""
     self.customer_id = customer_id
-    # Load customer-specific data here if needed
-    self.load_customer_details()
+    if products is None:
+      # Products not preloaded, need to load them now
+      self.loading_panel.visible = True
+      self.product_panel.visible = False
+      self.load_products()
+    else:
+      # Products already loaded
+      self.products = products
+      self.loading_panel.visible = False
+      self.product_panel.visible = True
+      self.populate_products()
 
   def load_customer_details(self):
     """Load any customer-specific details needed for billing"""
@@ -26,6 +38,22 @@ class addBill(addBillTemplate):
         pass
       except Exception as e:
         alert(f"Error loading customer details: {str(e)}")
+
+  def load_products(self):
+    """Load products if they weren't preloaded"""
+    try:
+      self.products = anvil.server.call('list_products')
+      self.loading_panel.visible = False
+      self.product_panel.visible = True
+      self.populate_products()
+    except Exception as e:
+      alert(f"Error loading products: {str(e)}")
+      
+  def populate_products(self):
+    """Populate the product picker with loaded products"""
+    # Implement your product display logic here
+    # This will depend on your specific UI components
+    pass
 
   def product_picker_change(self, **event_args):
     """This method is called when an item is selected"""

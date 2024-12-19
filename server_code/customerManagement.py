@@ -31,3 +31,28 @@ def create_customer(name, phone, email, address):
         return {'id': customer.id, 'name': customer.name, 'email': customer.email}
     except StripeError as e:
         raise Exception(f"Failed to create customer: {e.user_message}")
+
+@anvil.server.callable
+def list_products():
+    try:
+        products = stripe.Product.list(active=True)
+        # Return relevant product details including prices
+        product_list = []
+        for product in products.auto_paging_iter():
+            # Get prices for this product
+            prices = stripe.Price.list(product=product.id, active=True)
+            product_list.append({
+                'id': product.id,
+                'name': product.name,
+                'description': product.description,
+                'image': product.images[0] if product.images else None,
+                'prices': [{
+                    'id': price.id,
+                    'unit_amount': price.unit_amount,
+                    'currency': price.currency,
+                    'recurring': price.recurring
+                } for price in prices.auto_paging_iter()]
+            })
+        return product_list
+    except StripeError as e:
+        raise Exception(f"Failed to fetch products: {e.user_message}")
