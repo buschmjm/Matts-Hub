@@ -133,19 +133,25 @@ class addCustomer(addCustomerTemplate):
     # Clean the phone number before sending
     phone_cleaned = re.sub(r'[\s\-\(\)]', '', self.phone_input.text.strip())
       
-    # Create new customer
+    # Create new customer with properly formatted address
     try:
+      address = {
+        'line1': self.address_input.text.strip(),
+        'city': '',  # Add these fields to your form if needed
+        'state': '',
+        'postal_code': '',
+        'country': 'US'  # Default to US
+      }
+      
       customer = anvil.server.call('create_customer',
         name=self.name_input.text.strip(),
         phone=phone_cleaned,
         email=self.email_input.text.strip(),
-        address=self.address_input.text.strip()
+        address=address
       )
       if customer:
-        # Store customer ID and raise event
         self.store_customer_id(customer['id'])
         self.raise_event('x-customer-selected', customer_id=customer['id'])
-        # Clear form
         self.clear_inputs()
     except Exception as e:
       alert(f"Error creating customer: {str(e)}")
@@ -161,12 +167,13 @@ class addCustomer(addCustomerTemplate):
     pass
 
   def show_validation_message(self, field_name):
-    """Display validation message if there's an error"""
-    if self.validation_errors[field_name]:
+    """Display validation message if there's an error and hasn't been shown"""
+    if self.validation_errors[field_name] and not getattr(self, f'_{field_name}_error_shown', False):
       Notification(self.validation_errors[field_name], timeout=3).show()
+      setattr(self, f'_{field_name}_error_shown', True)
 
-  def name_input_change(self, **event_args):
-    """Validate name field"""
+  def name_input_lost_focus(self, **event_args):
+    """Validate name field when user leaves it"""
     if not self.name_input.text or not self.name_input.text.strip():
       self.validation_errors['name'] = "Name is required"
       self.name_input.background = '#f8f8f8'
@@ -174,10 +181,11 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['name'] = ''
       self.name_input.background = 'white'
+      self._name_error_shown = False
     self.input_changed()
 
-  def email_input_change(self, **event_args):
-    """Validate email field"""
+  def email_input_lost_focus(self, **event_args):
+    """Validate email field when user leaves it"""
     if not self.validate_email(self.email_input.text):
       self.validation_errors['email'] = "Please enter a valid email address"
       self.email_input.background = '#f8f8f8'
@@ -185,10 +193,11 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['email'] = ''
       self.email_input.background = 'white'
+      self._email_error_shown = False
     self.input_changed()
 
-  def phone_input_change(self, **event_args):
-    """Validate phone field"""
+  def phone_input_lost_focus(self, **event_args):
+    """Validate phone field when user leaves it"""
     if not self.validate_phone(self.phone_input.text):
       self.validation_errors['phone'] = "Please enter a valid phone number"
       self.phone_input.background = '#f8f8f8'
@@ -196,10 +205,11 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['phone'] = ''
       self.phone_input.background = 'white'
+      self._phone_error_shown = False
     self.input_changed()
 
-  def address_input_change(self, **event_args):
-    """Validate address field"""
+  def address_input_lost_focus(self, **event_args):
+    """Validate address field when user leaves it"""
     if not self.address_input.text or not self.address_input.text.strip():
       self.validation_errors['address'] = "Address is required"
       self.address_input.background = '#f8f8f8'
@@ -207,6 +217,7 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['address'] = ''
       self.address_input.background = 'white'
+      self._address_error_shown = False
     self.input_changed()
 
   def phone_input_pressed_enter(self, **event_args):
@@ -218,5 +229,11 @@ class addCustomer(addCustomerTemplate):
     """Store customer ID in browser's localStorage"""
     from anvil import js
     js.window.localStorage.setItem('temp_customer_id', customer_id)
+
+  # Remove the old change handlers since we're now using lost_focus
+  def name_input_change(self, **event_args): pass
+  def email_input_change(self, **event_args): pass
+  def phone_input_change(self, **event_args): pass
+  def address_input_change(self, **event_args): pass
 
 

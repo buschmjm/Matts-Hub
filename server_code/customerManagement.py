@@ -22,6 +22,17 @@ def list_customers():
 @anvil.server.callable
 def create_customer(name, phone, email, address):
     try:
+        # Ensure address is properly formatted for Stripe
+        if isinstance(address, str):
+            # If address is a string, convert it to the expected format
+            address = {
+                'line1': address,
+                'city': '',
+                'state': '',
+                'postal_code': '',
+                'country': 'US'
+            }
+            
         customer = stripe.Customer.create(
             name=name,
             phone=phone,
