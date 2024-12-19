@@ -18,6 +18,12 @@ class addCustomer(addCustomerTemplate):
     self.select_customer.enabled = False
     self.email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
     self.phone_regex = r'^\+?1?\d{9,15}$'
+    self.validation_errors = {
+      'name': '',
+      'email': '',
+      'phone': '',
+      'address': ''
+    }
     
   def form_show(self, **event_args):
     """Load customers when form becomes visible"""
@@ -97,34 +103,31 @@ class addCustomer(addCustomerTemplate):
       self.confirm_selection.visible = True
 
   def input_changed(self, **event_args):
-    """Called when any input field changes"""
+    """Update confirm button state"""
     if self.select_customer.selected_value == 'new':
-      is_valid = self.check_new_customer_fields()
-      self.confirm_selection.visible = is_valid
-      self.confirm_selection.enabled = is_valid
+      # Always show the button, validation happens on click
+      self.confirm_selection.visible = True
+      # Visual feedback if there are any errors
+      has_errors = any(self.validation_errors.values())
+      self.confirm_selection.background = '#f8f8f8' if has_errors else None
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
     
     if selected_value and selected_value != 'new':
-      # Existing customer selected - raise event
+      # Existing customer selected - store ID and raise event
+      anvil.local_storage.set('temp_customer_id', selected_value)
       self.raise_event('x-customer-selected', customer_id=selected_value)
     else:
       # New customer - proceed with creation
       self.create_customer_click()
       
   def create_customer_click(self, **event_args):
-    # Validate inputs
-    if not self.check_new_customer_fields():
-      # Show specific validation messages
-      if not self.name_input.text.strip():
-        alert("Name is required!")
-      elif not self.validate_email(self.email_input.text):
-        alert("Please enter a valid email address!")
-      elif not self.validate_phone(self.phone_input.text):
-        alert("Please enter a valid phone number!")
-      elif not self.address_input.text.strip():
-        alert("Address is required!")
+    """Handle customer creation with improved validation feedback"""
+    # Check for any validation errors
+    validation_messages = [msg for msg in self.validation_errors.values() if msg]
+    if validation_messages:
+      alert("\n".join(validation_messages))
       return
       
     # Clean the phone number before sending
@@ -139,8 +142,12 @@ class addCustomer(addCustomerTemplate):
         address=self.address_input.text.strip()
       )
       if customer:
+        # Store customer ID in local storage
+        anvil.local_storage.set('temp_customer_id', customer['id'])
         # Raise event with new customer info
         self.raise_event('x-customer-selected', customer_id=customer['id'])
+        # Clear form
+        self.clear_inputs()
     except Exception as e:
       alert(f"Error creating customer: {str(e)}")
       
@@ -154,20 +161,53 @@ class addCustomer(addCustomerTemplate):
     """This method is called when the user presses Enter in this text box"""
     pass
 
+  def show_validation_message(self, field_name):
+    """Display validation message if there's an error"""
+    if self.validation_errors[field_name]:
+      Notification(self.validation_errors[field_name], timeout=3).show()
+
   def name_input_change(self, **event_args):
-    """This method is called when the text in this text box is edited"""
-    pass
+    """Validate name field"""
+    if not self.name_input.text or not self.name_input.text.strip():
+      self.validation_errors['name'] = "Name is required"
+      self.name_input.background = '#f8f8f8'
+      self.show_validation_message('name')
+    else:
+      self.validation_errors['name'] = ''
+      self.name_input.background = 'white'
+    self.input_changed()
 
   def email_input_change(self, **event_args):
-    """This method is called when the text in this text box is edited"""
-    pass
+    """Validate email field"""
+    if not self.validate_email(self.email_input.text):
+      self.validation_errors['email'] = "Please enter a valid email address"
+      self.email_input.background = '#f8f8f8'
+      self.show_validation_message('email')
+    else:
+      self.validation_errors['email'] = ''
+      self.email_input.background = 'white'
+    self.input_changed()
 
   def phone_input_change(self, **event_args):
-    """This method is called when the text in this text box is edited"""
-    pass
+    """Validate phone field"""
+    if not self.validate_phone(self.phone_input.text):
+      self.validation_errors['phone'] = "Please enter a valid phone number"
+      self.phone_input.background = '#f8f8f8'
+      self.show_validation_message('phone')
+    else:
+      self.validation_errors['phone'] = ''
+      self.phone_input.background = 'white'
+    self.input_changed()
 
   def address_input_change(self, **event_args):
-    """This method is called when the text in this text box is edited"""
-    pass
+    """Validate address field"""
+    if not self.address_input.text or not self.address_input.text.strip():
+      self.validation_errors['address'] = "Address is required"
+      self.address_input.background = '#f8f8f8'
+      self.show_validation_message('address')
+    else:
+      self.validation_errors['address'] = ''
+      self.address_input.background = 'white'
+    self.input_changed()
 
 
