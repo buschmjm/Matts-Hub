@@ -1,0 +1,39 @@
+container:
+  type: ColumnPanel
+  properties: {col_spacing: medium}
+  components:
+  - type: DropDown
+    name: select_customer
+    properties: {placeholder: Select Customer}
+    event_bindings: {change: select_customer_change}
+
+  - type: ColumnPanel
+    name: new_customer_panel
+    properties: {visible: false}
+    components:
+    - type: TextBox
+      name: name_input
+      properties: {placeholder: Full Name}
+      event_bindings: {change: name_input_change, lost_focus: name_input_lost_focus}
+
+    - type: TextBox
+      name: email_input
+      properties: {placeholder: Email Address}
+      event_bindings: {change: email_input_change, lost_focus: email_input_lost_focus}
+
+    - type: TextBox
+      name: phone_input
+      properties: {placeholder: Phone Number}
+      event_bindings: {change: phone_input_change, lost_focus: phone_input_lost_focus}
+
+    - type: TextBox
+      name: address_input
+      properties: {placeholder: Address}
+      event_bindings: {change: address_input_change, lost_focus: address_input_lost_focus, pressed_enter: address_input_pressed_enter}
+
+  - type: Button
+    name: confirm_selection
+    properties: {text: Confirm, enabled: true}
+    event_bindings: {click: confirm_selection_click}
+
+is_package: true

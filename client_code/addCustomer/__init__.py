@@ -24,6 +24,14 @@ class addCustomer(addCustomerTemplate):
       'phone': '',
       'address': ''
     }
+    self._setup_validation_triggers()
+    
+  def _setup_validation_triggers(self):
+    """Set up lost focus event handlers for all input fields"""
+    self.name_input.set_event_handler('lost_focus', self.name_input_lost_focus)
+    self.email_input.set_event_handler('lost_focus', self.email_input_lost_focus)
+    self.phone_input.set_event_handler('lost_focus', self.phone_input_lost_focus)
+    self.address_input.set_event_handler('lost_focus', self.address_input_lost_focus)
     
   def form_show(self, **event_args):
     """Load customers when form becomes visible"""
@@ -88,7 +96,6 @@ class addCustomer(addCustomerTemplate):
   def select_customer_change(self, **event_args):
     selected_value = self.select_customer.selected_value
     
-    # Updated logic for new values
     if selected_value is None:
       # Initial "Select a customer..." option
       self.new_customer_panel.visible = False
@@ -100,13 +107,32 @@ class addCustomer(addCustomerTemplate):
       self.new_customer_panel.visible = False
 
   def input_changed(self, **event_args):
-    """Update confirm button state"""
+    """Update confirm button state whenever any input changes"""
+    self.update_confirm_button()
+
+  def update_confirm_button(self):
+    """Update confirm button state and appearance"""
+    has_errors = any(self.validation_errors.values())
     if self.select_customer.selected_value == 'new':
-      # Always show the button, validation happens on click
-      self.confirm_selection.visible = True
-      # Visual feedback if there are any errors
-      has_errors = any(self.validation_errors.values())
-      self.confirm_selection.background = '#f8f8f8' if has_errors else None
+      fields_empty = not all([
+        self.name_input.text,
+        self.email_input.text,
+        self.phone_input.text,
+        self.address_input.text
+      ])
+      self.confirm_selection.enabled = not (has_errors or fields_empty)
+      self.confirm_selection.background = '#f8f8f8' if (has_errors or fields_empty) else None
+      if fields_empty:
+        self.confirm_selection.tooltip = "Please fill in all required fields"
+      elif has_errors:
+        self.confirm_selection.tooltip = "Please fix validation errors"
+      else:
+        self.confirm_selection.tooltip = ""
+    else:
+      # For existing customer selection
+      self.confirm_selection.enabled = bool(self.select_customer.selected_value)
+      self.confirm_selection.background = None
+      self.confirm_selection.tooltip = ""
 
   def confirm_selection_click(self, **event_args):
     selected_value = self.select_customer.selected_value
@@ -130,19 +156,25 @@ class addCustomer(addCustomerTemplate):
     # Clean the phone number before sending
     phone_cleaned = re.sub(r'[\s\-\(\)]', '', self.phone_input.text.strip())
       
-    # Create new customer
+    # Create new customer with properly formatted address
     try:
+      address = {
+        'line1': self.address_input.text.strip(),
+        'city': '',  # Add these fields to your form if needed
+        'state': '',
+        'postal_code': '',
+        'country': 'US'  # Default to US
+      }
+      
       customer = anvil.server.call('create_customer',
         name=self.name_input.text.strip(),
         phone=phone_cleaned,
         email=self.email_input.text.strip(),
-        address=self.address_input.text.strip()
+        address=address
       )
       if customer:
-        # Store customer ID and raise event
         self.store_customer_id(customer['id'])
         self.raise_event('x-customer-selected', customer_id=customer['id'])
-        # Clear form
         self.clear_inputs()
     except Exception as e:
       alert(f"Error creating customer: {str(e)}")
@@ -158,7 +190,7 @@ class addCustomer(addCustomerTemplate):
     pass
 
   def show_validation_message(self, field_name):
-    """Display validation message if there's an error"""
+    """Display validation message immediately"""
     if self.validation_errors[field_name]:
       Notification(self.validation_errors[field_name], timeout=3).show()
 
@@ -223,5 +255,11 @@ class addCustomer(addCustomerTemplate):
     """Store customer ID in browser's localStorage"""
     from anvil import js
     js.window.localStorage.setItem('temp_customer_id', customer_id)
+
+  # Remove the old change handlers since we're now using lost_focus
+  def name_input_change(self, **event_args): pass
+  def email_input_change(self, **event_args): pass
+  def phone_input_change(self, **event_args): pass
+  def address_input_change(self, **event_args): pass
 
 
