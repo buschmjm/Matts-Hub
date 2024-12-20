@@ -9,9 +9,6 @@ components:
   properties: {}
   type: DropDown
 - components:
-  - name: repeating_panel_2
-    properties: {item_template: addBill.RowTemplate2}
-    type: RepeatingPanel
   - components:
     - components:
       - layout_properties: {}
@@ -81,79 +78,60 @@ components:
     - {data_key: column_1, expand: false, id: PWLFGU, title: 'Taxable?', width: 77.31689453125}
   type: DataGrid
 container:
-  type: ColumnPanel
-  properties: {col_spacing: medium}
   components:
-    - type: Label
-      name: loading_label
-      properties: {text: Loading products..., font_size: 16}
-    
-    - type: DropDown
-      name: product_picker
-      properties: {placeholder: Select a product, visible: false}
-      event_bindings: {change: product_picker_change}
-      
-    - type: Label
-      name: price_label
-      properties: {font_size: 18, bold: true}
-      
-    - type: Label
-      name: description_label
-      properties: {font_size: 14}
-      
-    - type: TextBox
-      name: quantity_box
-      properties: {placeholder: Enter quantity, type: number, enabled: false}
-      
-    - type: Button
+  - name: loading_label
+    properties: {font_size: 16, text: Loading products...}
+    type: Label
+  - event_bindings: {change: product_picker_change}
+    name: product_picker
+    properties: {placeholder: Select a product, visible: false}
+    type: DropDown
+  - name: price_label
+    properties: {bold: true, font_size: 18}
+    type: Label
+  - name: description_label
+    properties: {font_size: 14}
+    type: Label
+  - name: quantity_box
+    properties: {enabled: false, placeholder: Enter quantity, type: number}
+    type: TextBox
+  - name: add_item_button
+    properties: {enabled: false, text: Add to Bill}
+    type: Button
+  - columns:
+    - {data_key: name, name: product_name, title: Product}
+    - {data_key: quantity, name: quantity, title: Quantity}
+    - {data_key: price, name: price, title: Price}
+    - {data_key: total, name: total, title: Total}
+    name: bill_items_grid
+    properties: {visible: true}
+    type: DataGrid
+  - components:
+    - name: quantity_box
+      properties: {placeholder: Quantity, type: number}
+      type: TextBox
+    - event_bindings: {click: add_item_button_click}
       name: add_item_button
-      properties: {text: Add to Bill, enabled: false}
-
-    - type: DataGrid
-      name: bill_items_grid
-      properties: {visible: true}
-      columns:
-        - name: product_name
-          title: Product
-          data_key: name
-        - name: quantity
-          title: Quantity
-          data_key: quantity
-        - name: price
-          title: Price
-          data_key: price
-        - name: total
-          title: Total
-          data_key: total
-
-    - type: FlowPanel
-      properties: {spacing: medium}
-      components:
-        - type: TextBox
-          name: quantity_box
-          properties: {placeholder: Quantity, type: number}
-          
-        - type: Button
-          name: add_item_button
-          properties: {text: Add to Bill}
-          event_bindings: {click: add_item_button_click}
-          
-    - type: DataGrid
-      name: bill_preview
-      properties: {visible: true}
-      event_bindings: {change: bill_preview_change}
-      
-    - type: FlowPanel
-      properties: {spacing: medium}
-      components:
-        - type: Label
-          name: subtotal_label
-          properties: {text: "Subtotal: $0.00"}
-        - type: Label
-          name: tax_label
-          properties: {text: "Tax: $0.00"}
-        - type: Label
-          name: total_label
-          properties: {text: "Total: $0.00"}
-
+      properties: {text: Add to Bill}
+      type: Button
+    properties: {spacing: medium}
+    type: FlowPanel
+  - event_bindings: {change: bill_preview_change}
+    name: bill_preview
+    properties: {visible: true}
+    type: DataGrid
+  - components:
+    - name: subtotal_label
+      properties: {text: 'Subtotal: $0.00'}
+      type: Label
+    - name: tax_label
+      properties: {text: 'Tax: $0.00'}
+      type: Label
+    - name: total_label
+      properties: {text: 'Total: $0.00'}
+      type: Label
+    properties: {spacing: medium}
+    type: FlowPanel
+  properties: {col_spacing: medium}
+  type: ColumnPanel
 is_package: true
