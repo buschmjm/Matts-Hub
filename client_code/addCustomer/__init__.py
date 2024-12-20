@@ -11,7 +11,7 @@ class addCustomer(addCustomerTemplate):
   def __init__(self, **properties):
     self.init_components(**properties)
     self.new_customer_panel.visible = False
-    self.confirm_selection.visible = False
+    self.confirm_selection.visible = True  # Always show confirm button
     self._customers_loaded = False
     # Initialize with loading state
     self.select_customer.items = [('Loading...', None)]
@@ -92,15 +92,12 @@ class addCustomer(addCustomerTemplate):
     if selected_value is None:
       # Initial "Select a customer..." option
       self.new_customer_panel.visible = False
-      self.confirm_selection.visible = False
     elif selected_value == 'new':
       # "Create New" option
       self.new_customer_panel.visible = True
-      self.confirm_selection.visible = False  # Hide until fields are valid
     else:
       # Existing customer selected
       self.new_customer_panel.visible = False
-      self.confirm_selection.visible = True
 
   def input_changed(self, **event_args):
     """Update confirm button state"""
@@ -165,8 +162,8 @@ class addCustomer(addCustomerTemplate):
     if self.validation_errors[field_name]:
       Notification(self.validation_errors[field_name], timeout=3).show()
 
-  def name_input_change(self, **event_args):
-    """Validate name field"""
+  def name_input_lost_focus(self, **event_args):
+    """Validate name field when focus is lost"""
     if not self.name_input.text or not self.name_input.text.strip():
       self.validation_errors['name'] = "Name is required"
       self.name_input.background = '#f8f8f8'
@@ -174,10 +171,9 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['name'] = ''
       self.name_input.background = 'white'
-    self.input_changed()
 
-  def email_input_change(self, **event_args):
-    """Validate email field"""
+  def email_input_lost_focus(self, **event_args):
+    """Validate email field when focus is lost"""
     if not self.validate_email(self.email_input.text):
       self.validation_errors['email'] = "Please enter a valid email address"
       self.email_input.background = '#f8f8f8'
@@ -185,10 +181,9 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['email'] = ''
       self.email_input.background = 'white'
-    self.input_changed()
 
-  def phone_input_change(self, **event_args):
-    """Validate phone field"""
+  def phone_input_lost_focus(self, **event_args):
+    """Validate phone field when focus is lost"""
     if not self.validate_phone(self.phone_input.text):
       self.validation_errors['phone'] = "Please enter a valid phone number"
       self.phone_input.background = '#f8f8f8'
@@ -196,10 +191,9 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['phone'] = ''
       self.phone_input.background = 'white'
-    self.input_changed()
 
-  def address_input_change(self, **event_args):
-    """Validate address field"""
+  def address_input_lost_focus(self, **event_args):
+    """Validate address field when focus is lost"""
     if not self.address_input.text or not self.address_input.text.strip():
       self.validation_errors['address'] = "Address is required"
       self.address_input.background = '#f8f8f8'
@@ -207,7 +201,18 @@ class addCustomer(addCustomerTemplate):
     else:
       self.validation_errors['address'] = ''
       self.address_input.background = 'white'
-    self.input_changed()
+
+  def name_input_change(self, **event_args):
+    pass
+
+  def email_input_change(self, **event_args):
+    pass
+
+  def phone_input_change(self, **event_args):
+    pass
+
+  def address_input_change(self, **event_args):
+    pass
 
   def phone_input_pressed_enter(self, **event_args):
     """This method is called when the user presses Enter in this text box"""
